@@ -8,4 +8,4 @@ app.use(express.json());
 
 app.listen(3000, () => console.log("Servidor a correr na porta 3000"));
 
-export default app;1
+export default app;
