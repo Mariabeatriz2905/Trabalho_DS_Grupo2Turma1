@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-  "dev": "ts-node src/app.ts"
-},
+    "dev": "ts-node src/app.ts"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Mariabeatriz2905/Trabalho_DS_Grupo2Turma1.git"

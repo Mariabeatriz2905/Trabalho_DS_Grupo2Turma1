@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from "typeorm";
+import { RegistoAuditoria } from "./registoAuditoria.entity";
 
 @Entity("utilizadores")
 export class Utilizador {
@@ -16,11 +17,14 @@ export class Utilizador {
     password!: string;
 
     @Column({ default: true })
-    estado!: boolean;
+    estado!: boolean;        // true = ativo, false = bloqueado/desativado
 
     @Column({ type: "varchar", default: "utente" })
     perfil!: "utente" | "medico" | "administrador";
 
-    @Column({ nullable: true, type: "simple-json" })
+    @Column({ nullable: true, type: "datetime" })
     ultimoAcesso!: Date | null;
+
+    @OneToMany(() => RegistoAuditoria, registo => registo.utilizador)
+    registosAuditoria!: RegistoAuditoria[];
 }

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 import { Utilizador } from "./utilizador.entity";
 
 @Entity("administradores")
@@ -7,11 +7,10 @@ export class Administrador {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ default: "Geral" })
-    departamento!: string;
+    @Column({ unique: true })
+    id_utilizador!: number;
 
-    // Ligação direta ao Utilizador base
-    @OneToOne(() => Utilizador, { onDelete: "CASCADE" })
-    @JoinColumn()
+    @ManyToOne(() => Utilizador)
+    @JoinColumn({ name: "id_utilizador" })
     utilizador!: Utilizador;
 }

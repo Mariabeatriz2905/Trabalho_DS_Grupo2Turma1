@@ -1,6 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from "typeorm";
 import { Utilizador } from "./utilizador.entity";
+import { Medico } from "./medico.entity";
 import { AvaliacaoCarat } from "./avaliacaoCarat.entity";
+import { Alerta } from "./alerta.entity";
+import { Medicacao } from "./medicacao.entity";
+import { Sintoma } from "./sintoma.entity";
+import { Exame } from "./exame.entity";
+import { NotaClinica } from "./notaClinica.entity";
 
 @Entity("utentes")
 export class Utente {
@@ -8,24 +14,40 @@ export class Utente {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ unique: true, length: 9 })
-    nus!: string; // Número de Utente de Saúde (9 dígitos)
+    @Column({ unique: true })
+    id_utilizador!: number;
+
+    @Column({ unique: true })
+    nif!: string;
+
+    @Column({ nullable: true, type: "varchar" })
+    contacto!: string | null;
 
     @Column({ type: "date" })
-    dataNascimento!: Date;
+    dataNascimento!: string;
 
-    @Column({ type: "varchar" })
-    genero!: "masculino" | "feminino" | "outro";
-
-    @Column({ nullable: true })
-    telefone!: string;
-
-    // Ligação direta ao Utilizador base
-    @OneToOne(() => Utilizador, { onDelete: "CASCADE" })
-    @JoinColumn()
+    @ManyToOne(() => Utilizador)
+    @JoinColumn({ name: "id_utilizador" })
     utilizador!: Utilizador;
 
-    // Histórico de questionários CARAT que este utente realizou
-    @OneToMany(() => AvaliacaoCarat, (avaliacao) => avaliacao.utente)
+    @ManyToOne(() => Medico, medico => medico.utentes, { nullable: true })
+    medico!: Medico | null;
+
+    @OneToMany(() => AvaliacaoCarat, avaliacao => avaliacao.utente, { cascade: true })
     avaliacoes!: AvaliacaoCarat[];
+
+    @OneToMany(() => Alerta, alerta => alerta.utente, { cascade: true })
+    alertas!: Alerta[];
+
+    @OneToMany(() => Medicacao, med => med.utente, { cascade: true })
+    medicacoes!: Medicacao[];
+
+    @OneToMany(() => Sintoma, sintoma => sintoma.utente, { cascade: true })
+    sintomas!: Sintoma[];
+
+    @OneToMany(() => Exame, exame => exame.utente, { cascade: true })
+    exames!: Exame[];
+
+    @OneToMany(() => NotaClinica, nota => nota.utente, { cascade: true })
+    notasClinicas!: NotaClinica[];
 }
