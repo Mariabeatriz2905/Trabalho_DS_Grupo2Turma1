@@ -24,9 +24,26 @@ export class AvaliacaoCarat {
     @Column({ type: "text" })
     respostas!: string;
 
+    @Column({ type: "varchar" })
+    respostasString!: string;
+    
+    @Column({ type: "int" })
+    scoreTotal!: number;
+    
+    @Column({ type: "varchar" })
+    nivelControlo!: string;
+    
+    @Column({ type: "text", nullable: true })
+    observacoesClinicas!: string;
+
+    // Coluna para guardar o texto gerado automaticamente
+    @Column({ type: "text", nullable: true })
+    textoRecomendacao!: string;
+
     @OneToMany(() => Recomendacao, rec => rec.avaliacao, { cascade: true })
     recomendacoes!: Recomendacao[];
 
     @OneToMany(() => Alerta, alerta => alerta.avaliacao, { cascade: true })
     alertasGerados!: Alerta[];
+
 }
