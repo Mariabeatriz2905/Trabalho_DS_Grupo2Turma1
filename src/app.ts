@@ -2,6 +2,7 @@ import { AppDataSource } from './database/dados-locais';
 import utenteRoutes from './routes/utente.routes';
 import express from 'express';
 import path from 'path';
+import medicoRoutes from './routes/medico.routes';
 
 const app = express();
 
@@ -13,6 +14,7 @@ AppDataSource.initialize()
         console.log("Base de dados ligada com sucesso!");
 
         app.use('/utentes', utenteRoutes);
+        app.use('/medicos', medicoRoutes);
 
         app.listen(3000, () => console.log("Servidor a correr na porta 3000"));
     })
