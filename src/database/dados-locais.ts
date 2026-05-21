@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { DataSource } from "typeorm";
 import { Utilizador } from "../models/utilizador.entity";
 import { Utente } from "../models/utente.entity";
