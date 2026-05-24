@@ -3,6 +3,7 @@ import utenteRoutes from './routes/utente.routes';
 import express from 'express';
 import path from 'path';
 import medicoRoutes from './routes/medico.routes';
+import caratRoutes from './routes/carat.routes';
 
 const app = express();
 
@@ -15,7 +16,8 @@ AppDataSource.initialize()
 
         app.use('/utentes', utenteRoutes);
         app.use('/medicos', medicoRoutes);
-
+        app.use('/', caratRoutes);
+        
         app.listen(3000, () => console.log("Servidor a correr na porta 3000"));
     })
     .catch((err) => {
