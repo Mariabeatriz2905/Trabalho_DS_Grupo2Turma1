@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { CaratService } from "../services/carat.services";
+import { CaratService } from "../services/carat.service";
 
 export class CaratController {
     private service = new CaratService();

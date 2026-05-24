@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node src/app.ts"
+    "dev": "ts-node src/app.ts",
+    "seed": "ts-node src/seed.ts"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
   "homepage": "https://github.com/Mariabeatriz2905/Trabalho_DS_Grupo2Turma1#readme",
   "devDependencies": {
     "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.9.0",
     "nodemon": "^3.1.14",
     "ts-node": "^10.9.2",
@@ -28,6 +30,7 @@
   "dependencies": {
     "better-sqlite3": "^12.10.0",
     "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
     "reflect-metadata": "^0.2.2",
     "typeorm": "^1.0.0"
   }
