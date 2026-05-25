@@ -14,92 +14,92 @@ export class CaratService {
 
     async calcularEGuardar(utenteId: number, respostas: number[]): Promise<AvaliacaoCarat> {
         const utente = await this.utenteRepository.findOne({
-    where: { id: utenteId },
-    relations: { medico: true }
-});
-        if (!utente) {
-            throw new Error("Utente não encontrado no sistema.");
-        }
-
-        if (!respostas || respostas.length === 0) {
-            throw new Error("As respostas ao questionário não podem estar vazias.");
-        }
+            where: { id: utenteId },
+            relations: { medico: true }
+        });
+        if (!utente) throw new Error("Utente não encontrado no sistema.");
 
         const scoreTotal = respostas.reduce((soma, nota) => soma + nota, 0);
 
         let interpretacao = "Controlado";
         let textoRecomendacao = "Continue com o plano de medicação atual. Repita o teste em 4 semanas.";
 
-        if (scoreTotal < 16) {
+        if (scoreTotal < LIMIAR_NAO_CONTROLADO) {
             interpretacao = "Não Controlado";
             textoRecomendacao = "ALERTA: Controlo insuficiente! Marque uma consulta de revisão urgentemente.";
-        } else if (scoreTotal >= 16 && scoreTotal < 24) {
+        } else if (scoreTotal < LIMIAR_PARCIAL) {
             interpretacao = "Parcialmente Controlado";
             textoRecomendacao = "Atenção: Sintomas ligeiramente instáveis. Reforce as medidas de autocuidado.";
         }
 
-        const novaAvaliacao = new AvaliacaoCarat();
-        novaAvaliacao.utente = utente;
-        novaAvaliacao.respostas = respostas.join(",");
-        novaAvaliacao.scoreTotal = scoreTotal;
-        novaAvaliacao.interpretacao = interpretacao;
-        novaAvaliacao.textoRecomendacao = textoRecomendacao;
+        const novaAvaliacao = this.caratRepository.create({
+            utente,
+            respostas: respostas.join(","),
+            scoreTotal,
+            interpretacao,
+            textoRecomendacao
+        });
 
         const avaliacaoGuardada = await this.caratRepository.save(novaAvaliacao);
-await this.gerarAlertasAutomaticos(utente, avaliacaoGuardada, scoreTotal);
-return avaliacaoGuardada;
+        await this.gerarAlertasAutomaticos(utente, avaliacaoGuardada, scoreTotal);
+        return avaliacaoGuardada;
     }
+
     private async gerarAlertasAutomaticos(
-    utente: Utente,
-    avaliacao: AvaliacaoCarat,
-    scoreAtual: number
-): Promise<void> {
+        utente: Utente,
+        avaliacao: AvaliacaoCarat,
+        scoreAtual: number
+    ): Promise<void> {
+        const medico = utente.medico ?? null;
 
-    const medico = utente.medico ?? null;
-
-    if (scoreAtual < LIMIAR_NAO_CONTROLADO) {
-        await this.alertaRepository.save(this.alertaRepository.create({
-            utente, medico, avaliacao,
-            tipo: "score_baixo",
-            prioridade: "alta",
-            estado: "NOVO",
-            motivo: `Score CARAT de ${scoreAtual} indica doença NÃO CONTROLADA (limiar: ${LIMIAR_NAO_CONTROLADO}). Revisão urgente necessária.`
-        }));
-    } else if (scoreAtual < LIMIAR_PARCIAL) {
-        await this.alertaRepository.save(this.alertaRepository.create({
-            utente, medico, avaliacao,
-            tipo: "score_baixo",
-            prioridade: "media",
-            estado: "NOVO",
-            motivo: `Score CARAT de ${scoreAtual} indica doença PARCIALMENTE CONTROLADA. Recomenda-se revisão terapêutica.`
-        }));
-    }
-
-    const todasAvaliacoes = await this.caratRepository.find({
-    where: { utente: { id: utente.id } },
-    order: { data: "DESC" },
-    take: 2
-});
-const avaliacaoAnterior = todasAvaliacoes[1] ?? null;
-
-    if (avaliacaoAnterior) {
-        const queda = avaliacaoAnterior.scoreTotal - scoreAtual;
-        if (queda >= LIMIAR_DETERIORACAO) {
+        if (scoreAtual < LIMIAR_NAO_CONTROLADO) {
             await this.alertaRepository.save(this.alertaRepository.create({
                 utente, medico, avaliacao,
-                tipo: "deterioracao",
-                prioridade: queda >= 8 ? "critica" : "alta",
-                estado: "NOVO",
-                motivo: `Deterioração clínica: score baixou ${queda} pontos (de ${avaliacaoAnterior.scoreTotal} para ${scoreAtual}).`
+                tipo: "score_baixo", prioridade: "alta", estado: "NOVO",
+                motivo: `Score CARAT de ${scoreAtual} indica doença NÃO CONTROLADA (limiar: ${LIMIAR_NAO_CONTROLADO}). Revisão urgente necessária.`
+            }));
+        } else if (scoreAtual < LIMIAR_PARCIAL) {
+            await this.alertaRepository.save(this.alertaRepository.create({
+                utente, medico, avaliacao,
+                tipo: "score_baixo", prioridade: "media", estado: "NOVO",
+                motivo: `Score CARAT de ${scoreAtual} indica doença PARCIALMENTE CONTROLADA. Recomenda-se revisão terapêutica.`
             }));
         }
+
+        const todasAvaliacoes = await this.caratRepository.find({
+            where: { utente: { id: utente.id } },
+            order: { data: "DESC" },
+            take: 2
+        });
+        const avaliacaoAnterior = todasAvaliacoes[1] ?? null;
+
+        if (avaliacaoAnterior) {
+            const queda = avaliacaoAnterior.scoreTotal - scoreAtual;
+            if (queda >= LIMIAR_DETERIORACAO) {
+                await this.alertaRepository.save(this.alertaRepository.create({
+                    utente, medico, avaliacao,
+                    tipo: "deterioracao",
+                    prioridade: queda >= 8 ? "critica" : "alta",
+                    estado: "NOVO",
+                    motivo: `Deterioração clínica: score baixou ${queda} pontos (de ${avaliacaoAnterior.scoreTotal} para ${scoreAtual}).`
+                }));
+            }
+        }
     }
-}
 
     async listarPorUtente(utenteId: number): Promise<AvaliacaoCarat[]> {
-        return await this.caratRepository.find({
+        return this.caratRepository.find({
             where: { utente: { id: utenteId } },
             order: { data: "DESC" }
         });
+    }
+
+    async buscarPorId(id: number): Promise<AvaliacaoCarat> {
+        const avaliacao = await this.caratRepository.findOne({
+            where: { id },
+            relations: { utente: true }
+        });
+        if (!avaliacao) throw new Error("Avaliação CARAT não encontrada.");
+        return avaliacao;
     }
 }
