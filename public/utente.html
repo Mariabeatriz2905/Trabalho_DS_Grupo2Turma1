@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIAC — Dashboard do Utente</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #333; }
+
+        /* Navbar */
+        nav {
+            background: #1a4a6e;
+            color: white;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav h1 { font-size: 1.2rem; }
+        nav span { font-size: 0.9rem; opacity: 0.85; }
+        nav button {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .container { max-width: 1000px; margin: 32px auto; padding: 0 24px; }
+
+        /* Cards de estado */
+        .status-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .card .label { font-size: 0.8rem; color: #888; text-transform: uppercase; font-weight: 600; }
+        .card .value { font-size: 2rem; font-weight: 700; margin: 8px 0 4px; }
+        .card .sub { font-size: 0.85rem; color: #666; }
+        .card.verde .value { color: #27ae60; }
+        .card.amarelo .value { color: #f39c12; }
+        .card.vermelho .value { color: #e74c3c; }
+
+        /* Questionário CARAT */
+        .section { background: white; border-radius: 12px; padding: 28px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .section h2 { font-size: 1.1rem; color: #1a4a6e; margin-bottom: 20px; border-bottom: 2px solid #e8f0fe; padding-bottom: 12px; }
+
+        .pergunta { margin-bottom: 20px; }
+        .pergunta p { font-size: 0.95rem; margin-bottom: 10px; font-weight: 500; }
+        .opcoes { display: flex; gap: 10px; }
+        .opcoes label {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .opcoes input[type=radio] { display: none; }
+        .opcoes input[type=radio]:checked + span {
+            background: #1a4a6e;
+            color: white;
+        }
+        .opcoes label:has(input:checked) {
+            border-color: #1a4a6e;
+            background: #1a4a6e;
+            color: white;
+        }
+
+        .btn-submit {
+            background: #1a4a6e;
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 8px;
+        }
+        .btn-submit:hover { background: #0d2b42; }
+
+        /* Resultado */
+        .resultado {
+            display: none;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 16px;
+            font-size: 0.95rem;
+        }
+        .resultado.controlado { background: #d5f5e3; border: 1px solid #27ae60; }
+        .resultado.parcial { background: #fef9e7; border: 1px solid #f39c12; }
+        .resultado.nao-controlado { background: #fdecea; border: 1px solid #e74c3c; }
+
+        /* Histórico */
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px; background: #f8f9fa; font-size: 0.85rem; color: #555; }
+        td { padding: 12px; border-bottom: 1px solid #f0f0f0; font-size: 0.9rem; }
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+        .badge.controlado { background: #d5f5e3; color: #27ae60; }
+        .badge.parcial { background: #fef9e7; color: #f39c12; }
+        .badge.nao-controlado { background: #fdecea; color: #e74c3c; }
+
+        /* Alertas */
+        .alerta-item {
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid;
+        }
+        .alerta-item.alta { background: #fef9e7; border-color: #f39c12; }
+        .alerta-item.critica { background: #fdecea; border-color: #e74c3c; }
+        .alerta-item.media { background: #e8f4fd; border-color: #3498db; }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>🫁 PIAC</h1>
+        <span id="nomeUtente">Carregando...</span>
+        <button onclick="sair()">Sair</button>
+    </nav>
+
+    <div class="container">
+
+        <!-- Cards de estado -->
+        <div class="status-cards">
+            <div class="card" id="cardScore">
+                <div class="label">Último Score CARAT</div>
+                <div class="value" id="ultimoScore">—</div>
+                <div class="sub" id="ultimaData">Sem avaliações</div>
+            </div>
+            <div class="card" id="cardEstado">
+                <div class="label">Estado de Controlo</div>
+                <div class="value" style="font-size:1.1rem;" id="estadoControlo">—</div>
+                <div class="sub">Baseado na última avaliação</div>
+            </div>
+            <div class="card">
+                <div class="label">Alertas Ativos</div>
+                <div class="value vermelho" id="numAlertas">—</div>
+                <div class="sub">Notificações pendentes</div>
+            </div>
+        </div>
+
+        <!-- Questionário CARAT -->
+        <div class="section">
+            <h2>📋 Questionário CARAT — Nova Avaliação</h2>
+            <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">
+                Responda às 10 perguntas sobre os seus sintomas respiratórios na última semana.<br>
+                <strong>1 = Nunca &nbsp;|&nbsp; 2 = Às vezes &nbsp;|&nbsp; 3 = Sempre</strong>
+            </p>
+            <div id="perguntasContainer"></div>
+            <button class="btn-submit" onclick="submeterCarat()">Calcular e Guardar Avaliação</button>
+            <div class="resultado" id="resultado"></div>
+        </div>
+
+        <!-- Alertas -->
+        <div class="section">
+            <h2>🔔 Os Meus Alertas</h2>
+            <div id="alertasContainer"><p style="color:#999">A carregar alertas...</p></div>
+        </div>
+
+        <!-- Histórico -->
+        <div class="section">
+            <h2>📊 Histórico de Avaliações CARAT</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Score Total</th>
+                        <th>Interpretação</th>
+                        <th>Recomendação</th>
+                    </tr>
+                </thead>
+                <tbody id="historicoTabela">
+                    <tr><td colspan="4" style="color:#999">A carregar histórico...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script>
+        // Perguntas do questionário CARAT
+        const perguntas = [
+            "Nas últimas semanas, teve rinite (corrimento nasal, comichão ou congestão nasal)?",
+            "Nas últimas semanas, os sintomas nasais perturbaram o seu sono?",
+            "Nas últimas semanas, os sintomas nasais perturbaram as suas atividades diárias?",
+            "Nas últimas semanas, teve sintomas de asma (pieira, falta de ar, aperto no peito)?",
+            "Nas últimas semanas, acordou durante a noite por causa da asma?",
+            "Nas últimas semanas, a asma perturbou as suas atividades diárias?",
+            "Nas últimas semanas, precisou de usar medicação de alívio (broncodilatador)?",
+            "No geral, como avalia o controlo da sua asma nas últimas semanas?",
+            "Como avalia o controlo da sua rinite nas últimas semanas?",
+            "Globalmente, como avalia o controlo das suas doenças respiratórias?"
+        ];
+
+        const token = localStorage.getItem('token');
+        const utilizador = JSON.parse(localStorage.getItem('utilizador') || '{}');
+        let utenteId = null;
+
+        // Verificar autenticação
+        if (!token || utilizador.perfil !== 'utente') {
+            window.location.href = '/';
+        }
+
+        document.getElementById('nomeUtente').textContent = `Olá, ${utilizador.nome}`;
+
+        // Gerar perguntas
+        const container = document.getElementById('perguntasContainer');
+        perguntas.forEach((p, i) => {
+            container.innerHTML += `
+                <div class="pergunta">
+                    <p>${i + 1}. ${p}</p>
+                    <div class="opcoes">
+                        <label><input type="radio" name="q${i}" value="1"><span style="display:block;padding:8px 0">1 — Nunca</span></label>
+                        <label><input type="radio" name="q${i}" value="2"><span style="display:block;padding:8px 0">2 — Às vezes</span></label>
+                        <label><input type="radio" name="q${i}" value="3"><span style="display:block;padding:8px 0">3 — Sempre</span></label>
+                    </div>
+                </div>`;
+        });
+
+        // Buscar dados do utente
+        async function carregarDados() {
+            // Primeiro precisamos do ID do utente (não é o mesmo que o ID do utilizador)
+            const resUtentes = await fetch('/utentes', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            // Como utente não pode listar todos, vamos buscar o histórico diretamente
+            // usando o ID do utilizador para encontrar o utente
+            // Solução: a API devolve o token com o id do Utilizador, precisamos do id do Utente
+            // Por agora carregamos os alertas e histórico depois do primeiro CARAT
+            await carregarHistorico();
+            await carregarAlertas();
+        }
+
+        async function carregarHistorico() {
+            // O ID do utente é armazenado após o primeiro login
+            const idUtente = localStorage.getItem('utenteId');
+            if (!idUtente) return;
+
+            const res = await fetch(`/utentes/${idUtente}/carat`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const avaliacoes = await res.json();
+
+            if (avaliacoes.length > 0) {
+                const ultima = avaliacoes[0];
+                document.getElementById('ultimoScore').textContent = ultima.scoreTotal;
+                document.getElementById('ultimaData').textContent =
+                    new Date(ultima.data).toLocaleDateString('pt-PT');
+                document.getElementById('estadoControlo').textContent = ultima.interpretacao;
+
+                const card = document.getElementById('cardScore');
+                if (ultima.scoreTotal >= 24) card.classList.add('verde');
+                else if (ultima.scoreTotal >= 16) card.classList.add('amarelo');
+                else card.classList.add('vermelho');
+            }
+
+            const tbody = document.getElementById('historicoTabela');
+            if (avaliacoes.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="color:#999">Sem avaliações ainda.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = avaliacoes.map(a => {
+                const cls = a.interpretacao === 'Controlado' ? 'controlado' :
+                            a.interpretacao === 'Parcialmente Controlado' ? 'parcial' : 'nao-controlado';
+                return `<tr>
+                    <td>${new Date(a.data).toLocaleDateString('pt-PT')}</td>
+                    <td><strong>${a.scoreTotal}</strong> / 30</td>
+                    <td><span class="badge ${cls}">${a.interpretacao}</span></td>
+                    <td style="font-size:0.85rem;color:#555">${a.textoRecomendacao || '—'}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        async function carregarAlertas() {
+            const idUtente = localStorage.getItem('utenteId');
+            if (!idUtente) {
+                document.getElementById('alertasContainer').innerHTML =
+                    '<p style="color:#999">Submeta o primeiro questionário para ver os seus alertas.</p>';
+                return;
+            }
+
+            const res = await fetch(`/utentes/${idUtente}/alertas`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const alertas = await res.json();
+
+            document.getElementById('numAlertas').textContent = alertas.length;
+
+            const cont = document.getElementById('alertasContainer');
+            if (alertas.length === 0) {
+                cont.innerHTML = '<p style="color:#27ae60">✅ Sem alertas ativos. Continue assim!</p>';
+                return;
+            }
+
+            cont.innerHTML = alertas.map(a => `
+                <div class="alerta-item ${a.prioridade}">
+                    <strong>${a.tipo.replace('_', ' ').toUpperCase()}</strong>
+                    <span style="font-size:0.8rem;color:#888;margin-left:8px">${new Date(a.data).toLocaleDateString('pt-PT')}</span>
+                    <p style="margin-top:4px;font-size:0.9rem">${a.motivo}</p>
+                </div>
+            `).join('');
+        }
+
+        async function submeterCarat() {
+            const respostas = [];
+            for (let i = 0; i < 10; i++) {
+                const sel = document.querySelector(`input[name="q${i}"]:checked`);
+                if (!sel) {
+                    alert(`Por favor responda à pergunta ${i + 1}.`);
+                    return;
+                }
+                respostas.push(Number(sel.value));
+            }
+
+            // Precisamos do ID do utente — buscamos da lista ou guardamos no login
+            let idUtente = localStorage.getItem('utenteId');
+
+            if (!idUtente) {
+                // Tentar descobrir o ID do utente através dos utentes (se tiver permissão)
+                alert('ID do utente não encontrado. Contacte o administrador.');
+                return;
+            }
+
+            try {
+                const res = await fetch(`/utentes/${idUtente}/carat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ respostas })
+                });
+
+                const dados = await res.json();
+                const resultDiv = document.getElementById('resultado');
+                resultDiv.style.display = 'block';
+
+                if (!res.ok) {
+                    resultDiv.className = 'resultado nao-controlado';
+                    resultDiv.innerHTML = `<strong>Erro:</strong> ${dados.erro}`;
+                    return;
+                }
+
+                const cls = dados.scoreTotal >= 24 ? 'controlado' :
+                            dados.scoreTotal >= 16 ? 'parcial' : 'nao-controlado';
+                resultDiv.className = `resultado ${cls}`;
+                resultDiv.innerHTML = `
+                    <strong>Score Total: ${dados.scoreTotal} / 30</strong><br>
+                    <strong>Interpretação: ${dados.interpretacao}</strong><br><br>
+                    ${dados.textoRecomendacao}
+                `;
+
+                await carregarHistorico();
+                await carregarAlertas();
+
+            } catch (err) {
+                alert('Erro ao submeter avaliação.');
+            }
+        }
+
+        function sair() {
+            localStorage.clear();
+            window.location.href = '/';
+        }
+
+        carregarDados();
+    </script>
+</body>
+</html>

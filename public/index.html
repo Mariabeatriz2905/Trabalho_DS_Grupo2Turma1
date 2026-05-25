@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIAC — Login</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1a4a6e 0%, #0d2b42 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 48px 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .logo h1 { color: #1a4a6e; font-size: 2rem; font-weight: 700; }
+        .logo p { color: #666; font-size: 0.9rem; margin-top: 4px; }
+        label { display: block; font-size: 0.85rem; font-weight: 600; color: #333; margin-bottom: 6px; }
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            transition: border-color 0.2s;
+        }
+        input:focus { outline: none; border-color: #1a4a6e; }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #1a4a6e;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover { background: #0d2b42; }
+        .erro {
+            background: #fff0f0;
+            border: 1px solid #ffcccc;
+            color: #c0392b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 16px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .info {
+            background: #f0f7ff;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 24px;
+            font-size: 0.8rem;
+            color: #555;
+        }
+        .info strong { color: #1a4a6e; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="logo">
+            <h1>🫁 PIAC</h1>
+            <p>Plataforma Inteligente de Acompanhamento Clínico</p>
+        </div>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="exemplo@piac.pt">
+
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="••••••••">
+
+        <button onclick="fazerLogin()">Entrar</button>
+
+        <div class="erro" id="msgErro"></div>
+
+        <div class="info">
+            <strong>Contas de teste:</strong><br>
+            Admin: admin@piac.pt / admin123<br>
+            Médico: ana.respiratoria@piac.pt / medico123<br>
+            Utente: joao.silva@email.pt / utente123
+        </div>
+    </div>
+
+    <script>
+        async function fazerLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const msgErro = document.getElementById('msgErro');
+
+            if (!email || !password) {
+                msgErro.textContent = 'Preencha o email e a password.';
+                msgErro.style.display = 'block';
+                return;
+            }
+
+            try {
+                const res = await fetch('/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const dados = await res.json();
+
+                if (!res.ok) {
+                    msgErro.textContent = dados.erro || 'Erro ao fazer login.';
+                    msgErro.style.display = 'block';
+                    return;
+                }
+
+                // Guardar token e dados do utilizador
+                localStorage.setItem('token', dados.token);
+                localStorage.setItem('utilizador', JSON.stringify(dados.utilizador));
+
+                // Redirecionar conforme o perfil
+                const perfil = dados.utilizador.perfil;
+                if (perfil === 'utente') window.location.href = '/utente.html';
+                else if (perfil === 'medico') window.location.href = '/medico.html';
+                else if (perfil === 'administrador') window.location.href = '/admin.html';
+
+            } catch (err) {
+                msgErro.textContent = 'Erro de ligação ao servidor.';
+                msgErro.style.display = 'block';
+            }
+        }
+
+        // Permitir Enter para fazer login
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') fazerLogin();
+        });
+    </script>
+</body>
+</html>

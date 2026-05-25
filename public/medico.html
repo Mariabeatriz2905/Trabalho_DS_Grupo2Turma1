@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIAC — Dashboard do Médico</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #333; }
+        nav {
+            background: #1a6e4a;
+            color: white;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav h1 { font-size: 1.2rem; }
+        nav button {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .container { max-width: 1100px; margin: 32px auto; padding: 0 24px; }
+        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 24px;
+        }
+        .section h2 { font-size: 1.05rem; color: #1a6e4a; margin-bottom: 16px; border-bottom: 2px solid #e8f5ee; padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 10px 12px; background: #f8f9fa; font-size: 0.82rem; color: #555; }
+        td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; font-size: 0.88rem; }
+        .badge {
+            display: inline-block; padding: 3px 8px;
+            border-radius: 12px; font-size: 0.75rem; font-weight: 600;
+        }
+        .badge.controlado { background: #d5f5e3; color: #27ae60; }
+        .badge.parcial { background: #fef9e7; color: #e67e22; }
+        .badge.nao { background: #fdecea; color: #e74c3c; }
+        .badge.novo { background: #fdecea; color: #e74c3c; }
+        .badge.visto { background: #fef9e7; color: #e67e22; }
+        .badge.seguimento { background: #e8f4fd; color: #2980b9; }
+        .badge.fechado { background: #f0f0f0; color: #888; }
+        .btn {
+            padding: 6px 12px; border: none; border-radius: 6px;
+            cursor: pointer; font-size: 0.82rem; font-weight: 600;
+        }
+        .btn-verde { background: #d5f5e3; color: #27ae60; }
+        .btn-azul { background: #e8f4fd; color: #2980b9; }
+        .alerta-row.critica td { background: #fff5f5; }
+        .alerta-row.alta td { background: #fffbf0; }
+        select {
+            padding: 4px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.82rem;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>🩺 PIAC — Área do Médico</h1>
+        <span id="nomeMedico"></span>
+        <button onclick="sair()">Sair</button>
+    </nav>
+
+    <div class="container">
+        <div class="grid2">
+            <!-- Alertas -->
+            <div class="section">
+                <h2>🔔 Alertas Pendentes</h2>
+                <div id="alertasContainer"><p style="color:#999">A carregar...</p></div>
+            </div>
+
+            <!-- Utentes -->
+            <div class="section">
+                <h2>👥 Os Meus Utentes</h2>
+                <div id="utentesContainer"><p style="color:#999">A carregar...</p></div>
+            </div>
+        </div>
+
+        <!-- Detalhe do utente selecionado -->
+        <div class="section" id="detalheUtente" style="display:none">
+            <h2 id="tituloDetalhe">Ficha Clínica</h2>
+            <div id="conteudoDetalhe"></div>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        const utilizador = JSON.parse(localStorage.getItem('utilizador') || '{}');
+
+        if (!token || utilizador.perfil !== 'medico') window.location.href = '/';
+
+        document.getElementById('nomeMedico').textContent = `Dr(a). ${utilizador.nome}`;
+
+        const medicoId = localStorage.getItem('medicoId');
+
+        async function carregarAlertas() {
+            if (!medicoId) { document.getElementById('alertasContainer').innerHTML = '<p style="color:#999">ID do médico não encontrado.</p>'; return; }
+
+            const res = await fetch(`/medicos/${medicoId}/alertas`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const alertas = await res.json();
+
+            if (alertas.length === 0) {
+                document.getElementById('alertasContainer').innerHTML = '<p style="color:#27ae60">✅ Sem alertas pendentes.</p>';
+                return;
+            }
+
+            document.getElementById('alertasContainer').innerHTML = `
+                <table>
+                    <thead><tr><th>Utente</th><th>Tipo</th><th>Prioridade</th><th>Estado</th><th>Ação</th></tr></thead>
+                    <tbody>
+                        ${alertas.map(a => `
+                            <tr class="alerta-row ${a.prioridade}">
+                                <td>${a.utente?.utilizador?.nome || '—'}</td>
+                                <td style="font-size:0.8rem">${a.tipo.replace('_',' ')}</td>
+                                <td><span class="badge ${a.prioridade}">${a.prioridade.toUpperCase()}</span></td>
+                                <td>
+                                    <select onchange="atualizarAlerta(${a.id}, this.value)">
+                                        <option ${a.estado==='NOVO'?'selected':''}>NOVO</option>
+                                        <option ${a.estado==='VISTO'?'selected':''}>VISTO</option>
+                                        <option ${a.estado==='EM_SEGUIMENTO'?'selected':''}>EM_SEGUIMENTO</option>
+                                        <option ${a.estado==='FECHADO'?'selected':''}>FECHADO</option>
+                                    </select>
+                                </td>
+                                <td style="font-size:0.78rem;color:#666;max-width:200px">${a.motivo.substring(0,80)}...</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>`;
+        }
+
+        async function atualizarAlerta(id, estado) {
+            await fetch(`/alertas/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ estado })
+            });
+        }
+
+        async function carregarUtentes() {
+            const res = await fetch('/utentes', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const utentes = await res.json();
+
+            document.getElementById('utentesContainer').innerHTML = `
+                <table>
+                    <thead><tr><th>Nome</th><th>NIF</th><th>Ação</th></tr></thead>
+                    <tbody>
+                        ${utentes.map(u => `
+                            <tr>
+                                <td>${u.utilizador?.nome || '—'}</td>
+                                <td>${u.nif}</td>
+                                <td>
+                                    <button class="btn btn-azul" onclick="verFichaUtente(${u.id}, '${u.utilizador?.nome}')">
+                                        Ver Ficha
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>`;
+        }
+
+        async function verFichaUtente(utenteId, nome) {
+            const detalhe = document.getElementById('detalheUtente');
+            const titulo = document.getElementById('tituloDetalhe');
+            const conteudo = document.getElementById('conteudoDetalhe');
+
+            titulo.textContent = `📋 Ficha Clínica — ${nome}`;
+            conteudo.innerHTML = '<p style="color:#999">A carregar...</p>';
+            detalhe.style.display = 'block';
+            detalhe.scrollIntoView({ behavior: 'smooth' });
+
+            // Buscar histórico CARAT e alertas do utente
+            const [resCARAT, resAlertas] = await Promise.all([
+                fetch(`/utentes/${utenteId}/carat`, { headers: { 'Authorization': `Bearer ${token}` } }),
+                fetch(`/utentes/${utenteId}/alertas`, { headers: { 'Authorization': `Bearer ${token}` } })
+            ]);
+
+            const avaliacoes = await resCARAT.json();
+            const alertas = await resAlertas.json();
+
+            const tabelaCARAT = avaliacoes.length === 0
+                ? '<p style="color:#999;padding:12px">Sem avaliações CARAT.</p>'
+                : `<table>
+                    <thead><tr><th>Data</th><th>Score</th><th>Interpretação</th><th>Recomendação</th></tr></thead>
+                    <tbody>
+                        ${avaliacoes.map(a => {
+                            const cls = a.interpretacao === 'Controlado' ? 'controlado' :
+                                        a.interpretacao === 'Parcialmente Controlado' ? 'parcial' : 'nao';
+                            return `<tr>
+                                <td>${new Date(a.data).toLocaleDateString('pt-PT')}</td>
+                                <td><strong>${a.scoreTotal}/30</strong></td>
+                                <td><span class="badge ${cls}">${a.interpretacao}</span></td>
+                                <td style="font-size:0.82rem">${a.textoRecomendacao || '—'}</td>
+                            </tr>`;
+                        }).join('')}
+                    </tbody>
+                </table>`;
+
+            conteudo.innerHTML = `
+                <h3 style="margin-bottom:12px;color:#555">Histórico CARAT</h3>
+                ${tabelaCARAT}
+                <h3 style="margin:20px 0 12px;color:#555">Alertas</h3>
+                ${alertas.length === 0
+                    ? '<p style="color:#27ae60;padding:12px">Sem alertas para este utente.</p>'
+                    : alertas.map(a => `
+                        <div style="padding:10px 14px;margin-bottom:8px;border-radius:6px;background:#f8f9fa;border-left:3px solid ${a.prioridade==='critica'?'#e74c3c':a.prioridade==='alta'?'#f39c12':'#3498db'}">
+                            <strong>${a.tipo.replace('_',' ').toUpperCase()}</strong>
+                            <span style="font-size:0.8rem;color:#888;margin-left:8px">${new Date(a.data).toLocaleDateString('pt-PT')}</span>
+                            <span class="badge ${a.estado.toLowerCase()}" style="margin-left:8px">${a.estado}</span>
+                            <p style="margin-top:4px;font-size:0.85rem">${a.motivo}</p>
+                        </div>`).join('')
+                }`;
+        }
+
+        function sair() { localStorage.clear(); window.location.href = '/'; }
+
+        carregarAlertas();
+        carregarUtentes();
+    </script>
+</body>
+</html>
