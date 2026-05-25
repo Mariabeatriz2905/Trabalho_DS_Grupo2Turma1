@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { UtenteService } from "../services/utente.service";
+import { getObservationsFromFhir } from "../services/fhir.service";
 
 const service = new UtenteService();
 
@@ -47,6 +48,18 @@ export class UtenteController {
             res.json({ mensagem: "Utente desativado com sucesso." });
         } catch (err: any) {
             res.status(404).json({ erro: err.message });
+        }
+    }
+
+        async obterFHIR(req: Request, res: Response): Promise<void> {
+        try {
+            const id = String(req.params["id"]);
+
+            const dadosFHIR = await getObservationsFromFhir('8310-5', id);
+
+            res.json(dadosFHIR);
+        } catch (err: any) {
+            res.status(500).json({ erro: "Erro ao obter dados FHIR" });
         }
     }
 }

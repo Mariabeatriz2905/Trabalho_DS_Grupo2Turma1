@@ -9,5 +9,6 @@ router.get("/:id", (req, res) => controller.buscarPorId(req, res));
 router.post("/", (req, res) => controller.criar(req, res));
 router.patch("/:id", (req, res) => controller.atualizar(req, res));
 router.delete("/:id", (req, res) => controller.desativar(req, res));
+router.get('/:id/fhir', controller.obterFHIR.bind(controller));
 
 export default router;
