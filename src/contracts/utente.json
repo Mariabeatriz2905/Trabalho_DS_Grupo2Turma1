@@ -1,0 +1,32 @@
+{
+    "endpoint_criar": "POST /utentes",
+    "request_criar": {
+        "nome": "João Silva",
+        "email": "joao.silva@email.pt",
+        "password": "utente123",
+        "nif": "123456789",
+        "dataNascimento": "1985-03-15",
+        "contacto": "912000001"
+    },
+    "response_criar": {
+        "id": 1,
+        "id_utilizador": 1,
+        "nif": "123456789",
+        "contacto": "912000001",
+        "dataNascimento": "1985-03-15",
+        "utilizador": {
+            "id": 1,
+            "nome": "João Silva",
+            "email": "joao.silva@email.pt",
+            "perfil": "utente",
+            "estado": true
+        }
+    },
+    "endpoint_atualizar": "PATCH /utentes/:id",
+    "request_atualizar": {
+        "contacto": "912000002",
+        "nome": "João Silva Atualizado"
+    },
+    "endpoint_listar": "GET /utentes",
+    "endpoint_buscar": "GET /utentes/:id"
+}

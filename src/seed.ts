@@ -8,12 +8,14 @@ import { AvaliacaoCarat } from './models/avaliacaoCarat.entity';
 import { Alerta } from './models/alerta.entity';
 import { Medicacao } from './models/medicacao.entity';
 import { Sintoma } from './models/sintoma.entity';
+import { Exame } from './models/exame.entity';
+import { NotaClinica } from './models/notaClinica.entity';
 
 async function seed() {
     await AppDataSource.initialize();
     console.log("Base de dados ligada. A popular com dados simulados...");
 
-    // ADMINISTRADOR
+ // ADMINISTRADOR
     const utilizadorAdmin = AppDataSource.getRepository(Utilizador).create({
         nome: "Admin PIAC",
         email: "admin@piac.pt",
@@ -29,7 +31,7 @@ async function seed() {
     });
     await AppDataSource.getRepository(Administrador).save(admin);
 
-    // MÉDICOS
+ // MÉDICOS
     const utilizadorMedico1 = AppDataSource.getRepository(Utilizador).create({
         nome: "Dra. Ana Respiratória",
         email: "ana.respiratoria@piac.pt",
@@ -64,7 +66,7 @@ async function seed() {
     });
     await AppDataSource.getRepository(Medico).save(medico2);
 
-    // ===== UTENTES =====
+// UTENTES
     const utilizadorUtente1 = AppDataSource.getRepository(Utilizador).create({
         nome: "João Silva",
         email: "joao.silva@email.pt",
@@ -122,7 +124,26 @@ async function seed() {
     });
     await AppDataSource.getRepository(Utente).save(utente3);
 
-    // ===== AVALIAÇÕES CARAT =====
+    const utilizadorUtente4 = AppDataSource.getRepository(Utilizador).create({
+    nome: "Ana Sousa",
+    email: "ana.sousa@email.pt",
+    password: "utente123",
+    perfil: "utente",
+    estado: false  // conta desativada
+});
+    await AppDataSource.getRepository(Utilizador).save(utilizadorUtente4);
+
+const utente4 = AppDataSource.getRepository(Utente).create({
+    id_utilizador: utilizadorUtente4.id,
+    utilizador: utilizadorUtente4,
+    nif: "444444444",
+    dataNascimento: "1978-06-10",
+    contacto: "912000004",
+    medico: medico2
+});
+    await AppDataSource.getRepository(Utente).save(utente4);
+
+// AVALIAÇÕES CARAT
     const avaliacao1 = AppDataSource.getRepository(AvaliacaoCarat).create({
         utente: utente1,
         respostas: "3,2,3,1,2,3,2,3,2,1",
@@ -150,7 +171,25 @@ async function seed() {
     });
     await AppDataSource.getRepository(AvaliacaoCarat).save(avaliacao3);
 
-    //  ALERTAS 
+    const avaliacao4 = AppDataSource.getRepository(AvaliacaoCarat).create({
+    utente: utente3,
+    respostas: "2,2,2,2,2,2,2,2,2,2",
+    scoreTotal: 20,
+    interpretacao: "Parcialmente Controlado",
+    textoRecomendacao: "Atenção: Sintomas ligeiramente instáveis. Reforce as medidas de autocuidado."
+});
+    await AppDataSource.getRepository(AvaliacaoCarat).save(avaliacao4);
+
+const avaliacao5 = AppDataSource.getRepository(AvaliacaoCarat).create({
+    utente: utente3,
+    respostas: "1,1,1,1,1,1,1,1,1,1",
+    scoreTotal: 10,
+    interpretacao: "Não Controlado",
+    textoRecomendacao: "ALERTA: Controlo insuficiente! Marque uma consulta de revisão urgentemente."
+});
+    await AppDataSource.getRepository(AvaliacaoCarat).save(avaliacao5);
+
+ //  ALERTAS 
     const alerta1 = AppDataSource.getRepository(Alerta).create({
         utente: utente1,
         medico: medico1,
@@ -171,7 +210,46 @@ async function seed() {
     });
     await AppDataSource.getRepository(Alerta).save(alerta2);
 
-    // MEDICAMENTOS
+    const alerta3 = AppDataSource.getRepository(Alerta).create({
+    utente: utente3,
+    medico: medico2,
+    tipo: "score_baixo",
+    prioridade: "alta",
+    estado: "NOVO",
+    motivo: "Score CARAT de 10 — controlo insuficiente detectado."
+});
+    await AppDataSource.getRepository(Alerta).save(alerta3);
+
+const alerta4 = AppDataSource.getRepository(Alerta).create({
+    utente: utente3,
+    medico: medico2,
+    tipo: "deterioracao",
+    prioridade: "critica",
+    estado: "VISTO",
+    motivo: "Deterioração de 10 pontos em relação à avaliação anterior."
+});
+    await AppDataSource.getRepository(Alerta).save(alerta4);
+
+const alerta5 = AppDataSource.getRepository(Alerta).create({
+    utente: utente2,
+    medico: medico1,
+    tipo: "revisao_terapeutica",
+    prioridade: "media",
+    estado: "EM_SEGUIMENTO",
+    motivo: "Utente com sintomas persistentes — rever medicação."
+});
+    await AppDataSource.getRepository(Alerta).save(alerta5);
+
+const alerta6 = AppDataSource.getRepository(Alerta).create({
+    utente: utente2, medico: medico1,
+    tipo: "score_baixo",
+    prioridade: "baixa",
+    estado: "FECHADO",
+    motivo: "Alerta resolvido após consulta de revisão."
+});
+await AppDataSource.getRepository(Alerta).save(alerta6);
+
+// MEDICAMENTOS
     const med1 = AppDataSource.getRepository(Medicacao).create({
         utente: utente1,
         nome: "Budesonida",
@@ -188,7 +266,23 @@ async function seed() {
     });
     await AppDataSource.getRepository(Medicacao).save(med2);
 
-    // SINTOMAS
+    const med3 = AppDataSource.getRepository(Medicacao).create({
+    utente: utente3,
+    nome: "Montelucaste",
+    dose: "10mg",
+    periodo: "1x dia"
+});
+    await AppDataSource.getRepository(Medicacao).save(med3);
+
+const med4 = AppDataSource.getRepository(Medicacao).create({
+    utente: utente1,
+    nome: "Fluticasona",
+    dose: "50mcg",
+    periodo: "2x dia"
+});
+    await AppDataSource.getRepository(Medicacao).save(med4);
+
+// SINTOMAS
     const sint1 = AppDataSource.getRepository(Sintoma).create({
         utente: utente1,
         descricao: "Pieira noturna frequente",
@@ -204,6 +298,53 @@ async function seed() {
         intensidade: 2
     });
     await AppDataSource.getRepository(Sintoma).save(sint2);
+
+    const sint3 = AppDataSource.getRepository(Sintoma).create({
+    utente: utente3,
+    descricao: "Falta de ar ao esforço",
+    dataAparecimento: "2026-04-10",
+    intensidade: 5
+});
+    await AppDataSource.getRepository(Sintoma).save(sint3);
+
+const sint4 = AppDataSource.getRepository(Sintoma).create({
+    utente: utente1,
+    descricao: "Tosse seca noturna",
+    dataAparecimento: "2026-03-20",
+    dataDesaparecimento: "2026-04-15",
+    intensidade: 3
+});
+    await AppDataSource.getRepository(Sintoma).save(sint4);
+
+// EXAMES
+const exame1 = AppDataSource.getRepository(Exame).create({
+    utente: utente1, medico: medico1,
+    tipo: "Espirometria",
+    resultado: "FEV1/FVC = 68% — obstrução ligeira",
+    data: "2026-03-01"
+});
+await AppDataSource.getRepository(Exame).save(exame1);
+
+const exame2 = AppDataSource.getRepository(Exame).create({
+    utente: utente3, medico: medico2,
+    tipo: "Teste Alérgenos",
+    resultado: "Positivo para ácaros e pólens",
+    data: "2026-04-05"
+});
+await AppDataSource.getRepository(Exame).save(exame2);
+
+// NOTAS CLÍNICAS
+const nota1 = AppDataSource.getRepository(NotaClinica).create({
+    utente: utente1, medico: medico1,
+    descricao: "Utente com agravamento nos últimos 2 meses. Reforçar adesão à terapêutica."
+});
+await AppDataSource.getRepository(NotaClinica).save(nota1);
+
+const nota2 = AppDataSource.getRepository(NotaClinica).create({
+    utente: utente3, medico: medico2,
+    descricao: "Primeira consulta. Iniciar plano de dessensibilização a ácaros."
+});
+await AppDataSource.getRepository(NotaClinica).save(nota2);
 
     console.log("Dados simulados inseridos com sucesso!");
     process.exit(0);

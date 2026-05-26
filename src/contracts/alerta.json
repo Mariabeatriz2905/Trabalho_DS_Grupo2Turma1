@@ -1,0 +1,29 @@
+{
+    "endpoint_listar_medico": "GET /medicos/:id/alertas",
+    "endpoint_listar_utente": "GET /utentes/:id/alertas",
+    "response_listar": [
+        {
+            "id": 1,
+            "tipo": "score_baixo",
+            "prioridade": "alta",
+            "estado": "NOVO",
+            "motivo": "Score CARAT de 13 indica doença NÃO CONTROLADA. Revisão urgente necessária.",
+            "data": "2026-05-25T10:00:00.000Z",
+            "utente": {
+                "id": 1,
+                "nif": "111111111"
+            },
+            "medico": {
+                "id": 1,
+                "especialidade": "Pneumologia"
+            }
+        }
+    ],
+    "endpoint_atualizar": "PATCH /alertas/:id",
+    "request_atualizar": {
+        "estado": "VISTO"
+    },
+    "estados_validos": ["NOVO", "VISTO", "EM_SEGUIMENTO", "FECHADO"],
+    "tipos_alerta": ["score_baixo", "deterioracao", "revisao_terapeutica", "indicacao_exames"],
+    "prioridades": ["baixa", "media", "alta", "critica"]
+}

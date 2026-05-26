@@ -1,0 +1,30 @@
+{
+    "endpoint_criar": "POST /medicos",
+    "request_criar": {
+        "nome": "Dra. Ana Respiratória",
+        "email": "ana.respiratoria@piac.pt",
+        "password": "medico123",
+        "especialidade": "Pneumologia",
+        "contacto": "961000001"
+    },
+    "response_criar": {
+        "id": 1,
+        "id_utilizador": 1,
+        "especialidade": "Pneumologia",
+        "contacto": "961000001",
+        "utilizador": {
+            "id": 1,
+            "nome": "Dra. Ana Respiratória",
+            "email": "ana.respiratoria@piac.pt",
+            "perfil": "medico",
+            "estado": true
+        }
+    },
+    "endpoint_atualizar": "PATCH /medicos/:id",
+    "request_atualizar": {
+        "especialidade": "Imunoalergologia",
+        "contacto": "961000002"
+    },
+    "endpoint_listar": "GET /medicos",
+    "endpoint_buscar": "GET /medicos/:id"
+}

@@ -1,0 +1,28 @@
+{
+    "endpoint_submeter": "POST /utentes/:id/carat",
+    "request_submeter": {
+        "respostas": [3, 2, 3, 1, 2, 3, 2, 3, 2, 1]
+    },
+    "validacoes": {
+        "respostas": "Array obrigatório com exatamente 10 números entre 1 e 3"
+    },
+    "response_submeter": {
+        "id": 1,
+        "scoreTotal": 22,
+        "interpretacao": "Parcialmente Controlado",
+        "textoRecomendacao": "Atenção: Sintomas ligeiramente instáveis. Reforce as medidas de autocuidado.",
+        "respostas": "3,2,3,1,2,3,2,3,2,1",
+        "data": "2026-05-25T10:00:00.000Z",
+        "utente": {
+            "id": 1,
+            "nif": "111111111"
+        }
+    },
+    "niveis_controlo": {
+        "Controlado": "scoreTotal >= 24",
+        "Parcialmente Controlado": "scoreTotal >= 16 e < 24",
+        "Não Controlado": "scoreTotal < 16"
+    },
+    "endpoint_historico": "GET /utentes/:id/carat",
+    "endpoint_buscar": "GET /carat/:evalId"
+}
