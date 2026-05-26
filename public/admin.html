@@ -103,6 +103,12 @@
                     <label>Contacto</label>
                     <input type="text" id="u-contacto" placeholder="910000000">
                 </div>
+                <div class="form-group">
+                    <label>Médico Atribuído</label>
+                 <select id="u-medico">
+                 <option value="">Sem médico atribuído</option>
+                  </select>
+                </div>
             </div>
             <button class="btn btn-primary" onclick="criarUtente()">Criar Utente</button>
             <div class="sucesso" id="sucesso-utente">✅ Utente criado com sucesso!</div>
@@ -217,7 +223,8 @@
                 password: document.getElementById('u-password').value,
                 nif: document.getElementById('u-nif').value,
                 dataNascimento: document.getElementById('u-dataNascimento').value,
-                contacto: document.getElementById('u-contacto').value || undefined
+                contacto: document.getElementById('u-contacto').value || undefined,
+                medicoId: document.getElementById('u-medico').value ? Number(document.getElementById('u-medico').value) : undefined
             };
             const res = await fetch('/utentes', {
                 method: 'POST',
@@ -256,7 +263,19 @@
         }
 
         function sair() { localStorage.clear(); window.location.href = '/'; }
+        async function carregarMedicosDropdown() {
+         const res = await fetch('/medicos', { headers: { 'Authorization': `Bearer ${token}` } });
+         const medicos = await res.json();
+         const select = document.getElementById('u-medico');
+               medicos.forEach(m => {
+        const opt = document.createElement('option');
+              opt.value = m.id;
+              opt.textContent = `${m.utilizador?.nome} — ${m.especialidade || 'Geral'}`;
+        select.appendChild(opt);
+    });
+}
 
+carregarMedicosDropdown();
         carregarUtentes();
     </script>
 </body>

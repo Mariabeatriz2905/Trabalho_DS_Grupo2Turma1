@@ -98,7 +98,7 @@
 
         document.getElementById('nomeMedico').textContent = `Dr(a). ${utilizador.nome}`;
 
-        const medicoId = localStorage.getItem('medicoId');
+        const medicoId = localStorage.getItem('perfilId');
 
         async function carregarAlertas() {
             if (!medicoId) { document.getElementById('alertasContainer').innerHTML = '<p style="color:#999">ID do médico não encontrado.</p>'; return; }

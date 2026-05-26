@@ -250,7 +250,7 @@
 
         async function carregarHistorico() {
             // O ID do utente é armazenado após o primeiro login
-            const idUtente = localStorage.getItem('utenteId');
+            const idUtente = localStorage.getItem('perfilId')
             if (!idUtente) return;
 
             const res = await fetch(`/utentes/${idUtente}/carat`, {
@@ -290,7 +290,7 @@
         }
 
         async function carregarAlertas() {
-            const idUtente = localStorage.getItem('utenteId');
+            const idUtente = localStorage.getItem('perfilId');
             if (!idUtente) {
                 document.getElementById('alertasContainer').innerHTML =
                     '<p style="color:#999">Submeta o primeiro questionário para ver os seus alertas.</p>';
@@ -331,7 +331,7 @@
             }
 
             // Precisamos do ID do utente — buscamos da lista ou guardamos no login
-            let idUtente = localStorage.getItem('utenteId');
+            let idUtente = llocalStorage.getItem('perfilId');
 
             if (!idUtente) {
                 // Tentar descobrir o ID do utente através dos utentes (se tiver permissão)

@@ -37,6 +37,7 @@ export class UtenteService {
         nif: string;
         dataNascimento: string;
         contacto?: string;
+        medicoId?: number;
     }): Promise<Utente> {
         // Verificar se email já existe
         const emailExiste = await this.utilizadorRepo.findOneBy({ email: dados.email });
@@ -57,7 +58,8 @@ export class UtenteService {
             utilizador: utilizador,
             nif: dados.nif,
             dataNascimento: dados.dataNascimento,
-            contacto: dados.contacto ?? null
+            contacto: dados.contacto ?? null,
+            medico: dados.medicoId ? { id: dados.medicoId } as any : null
         });
         return this.utenteRepo.save(utente);
     }
