@@ -12,6 +12,7 @@ import { Sintoma } from "../models/sintoma.entity";
 import { Exame } from "../models/exame.entity";
 import { NotaClinica } from "../models/notaClinica.entity";
 import { RegistoAuditoria } from "../models/registoAuditoria.entity";
+import { LimiarAlerta } from "../models/limiarAlerta.entity";
 
 export const AppDataSource = new DataSource({
     type: "better-sqlite3",
@@ -30,6 +31,7 @@ export const AppDataSource = new DataSource({
         Sintoma,
         Exame,
         NotaClinica,
-        RegistoAuditoria
+        RegistoAuditoria,
+        LimiarAlerta,
     ],
 });

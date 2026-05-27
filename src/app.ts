@@ -8,6 +8,9 @@ import caratRoutes from './routes/carat.routes';
 import alertaRoutes from './routes/alerta.routes';
 import authRoutes from './routes/auth.routes';
 import fhirRoutes from './routes/fhir.routes';
+import limiarRoutes from './routes/limiar.routes';
+import notaClinicaRoutes from './routes/notaClinica.routes';
+
 
 const app = express();
 
@@ -23,6 +26,9 @@ app.use('/medicos', medicoRoutes);
 app.use('/', caratRoutes);
 app.use('/', alertaRoutes);
 app.use('/fhir', fhirRoutes);
+app.use('/limiares', limiarRoutes);
+app.use('/', notaClinicaRoutes);
+
 
 AppDataSource.initialize()
     .then(() => {
