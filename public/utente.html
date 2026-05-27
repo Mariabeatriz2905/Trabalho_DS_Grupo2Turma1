@@ -330,8 +330,8 @@
                 respostas.push(Number(sel.value));
             }
 
-            // Precisamos do ID do utente — buscamos da lista ou guardamos no login
-            let idUtente = llocalStorage.getItem('perfilId');
+            // Precisamos do ID do utente — procuramos na lista ou guardamos no login
+            let idUtente = localStorage.getItem('perfilId');
 
             if (!idUtente) {
                 // Tentar descobrir o ID do utente através dos utentes (se tiver permissão)
