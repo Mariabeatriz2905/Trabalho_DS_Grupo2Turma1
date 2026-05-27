@@ -17,6 +17,9 @@ routes.post("/", autenticar, autorizar("administrador"), (req: Request, res: Res
 routes.put("/:id", autenticar, autorizar("medico", "administrador"), (req: Request, res: Response) =>
     controller.atualizar(req, res));
 
+routes.patch("/:id", autenticar, autorizar("medico", "administrador"), (req: Request, res: Response) =>
+    controller.atualizar(req, res));
+
 routes.delete("/:id", autenticar, autorizar("administrador"), (req: Request, res: Response) =>
     controller.desativar(req, res));
 
