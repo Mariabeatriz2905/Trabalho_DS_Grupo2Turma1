@@ -90,6 +90,23 @@
         </div>
     </div>
 
+
+        <!-- Notas Clínicas -->
+<div class="section" id="secaoNotas" style="display:none;">
+    <h2>📝 Notas Clínicas</h2>
+    <div id="notasContainer"><p style="color:#999">Selecione um utente para ver as notas.</p></div>
+    <div style="margin-top:16px;">
+        <textarea id="novaNotaTexto" placeholder="Escrever nova nota clínica..."
+            style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px;
+            font-size:0.9rem; min-height:80px; resize:vertical;"></textarea>
+        <button onclick="guardarNota()"
+            style="margin-top:8px; background:#1a4a6e; color:white; border:none;
+            padding:10px 24px; border-radius:8px; cursor:pointer; font-weight:600;">
+            Guardar Nota
+        </button>
+    </div>
+</div>
+
     <script>
         const token = localStorage.getItem('token');
         const utilizador = JSON.parse(localStorage.getItem('utilizador') || '{}');
@@ -98,7 +115,6 @@
 
         document.getElementById('nomeMedico').textContent = `Dr(a). ${utilizador.nome}`;
 
-        const medicoId = localStorage.getItem('perfilId');
 
         async function carregarAlertas() {
             if (!medicoId) { document.getElementById('alertasContainer').innerHTML = '<p style="color:#999">ID do médico não encontrado.</p>'; return; }
@@ -221,7 +237,61 @@
                             <p style="margin-top:4px;font-size:0.85rem">${a.motivo}</p>
                         </div>`).join('')
                 }`;
+
+                await carregarNotas(utenteId);
         }
+
+
+
+        let utenteAtualId = null;
+let medicoId = localStorage.getItem('perfilId');
+
+async function carregarNotas(utenteId) {
+    utenteAtualId = utenteId;
+    document.getElementById('secaoNotas').style.display = 'block';
+    const res = await fetch(`/utentes/${utenteId}/notas`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const notas = await res.json();
+    const cont = document.getElementById('notasContainer');
+    if (notas.length === 0) {
+        cont.innerHTML = '<p style="color:#999">Sem notas clínicas para este utente.</p>';
+        return;
+    }
+    cont.innerHTML = notas.map(n => `
+        <div style="border-left:3px solid #1a4a6e; padding:10px 14px;
+             margin-bottom:10px; background:#f8f9fa; border-radius:0 8px 8px 0;">
+            <div style="font-size:0.8rem; color:#888; margin-bottom:4px;">
+                ${new Date(n.dataNota).toLocaleDateString('pt-PT')} —
+                Dr(a). ${n.medico?.utilizador?.nome || 'Médico'}
+            </div>
+            <div style="font-size:0.92rem;">${n.descricao}</div>
+        </div>
+    `).join('');
+    
+}
+
+async function guardarNota() {
+    const descricao = document.getElementById('novaNotaTexto').value.trim();
+    if (!descricao) { alert('Escreva uma nota antes de guardar.'); return; }
+    if (!utenteAtualId) { alert('Selecione um utente primeiro.'); return; }
+
+    const res = await fetch(`/medicos/${medicoId}/utentes/${utenteAtualId}/notas`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ descricao })
+    });
+    if (res.ok) {
+        document.getElementById('novaNotaTexto').value = '';
+        await carregarNotas(utenteAtualId);
+    } else {
+        alert('Erro ao guardar nota.');
+    }
+}
+
 
         function sair() { localStorage.clear(); window.location.href = '/'; }
 
