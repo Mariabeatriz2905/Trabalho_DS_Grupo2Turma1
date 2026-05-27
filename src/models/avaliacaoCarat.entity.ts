@@ -20,6 +20,12 @@ export class AvaliacaoCarat {
     
     @Column({ type: "int" })
     scoreTotal!: number;
+
+    @Column({ type: "int", nullable: true })
+    scoreRinite!: number;
+    
+    @Column({ type: "int", nullable: true })
+    scoreAsma!: number;
     
     @Column({ type: "varchar" })
     interpretacao!: string;

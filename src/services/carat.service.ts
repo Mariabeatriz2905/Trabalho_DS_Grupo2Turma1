@@ -21,6 +21,11 @@ export class CaratService {
 
         const scoreTotal = respostas.reduce((soma, nota) => soma + nota, 0);
 
+        // RF09 — sub-scores: perguntas 1-4 = rinite, 5-10 = asma
+    const scoreRinite = respostas.slice(0, 4).reduce((s, n) => s + n, 0);
+    const scoreAsma   = respostas.slice(4, 10).reduce((s, n) => s + n, 0);
+
+
         let interpretacao = "Controlado";
         let textoRecomendacao = "Continue com o plano de medicação atual. Repita o teste em 4 semanas.";
 
@@ -36,6 +41,8 @@ export class CaratService {
             utente,
             respostas: respostas.join(","),
             scoreTotal,
+            scoreRinite,
+            scoreAsma,
             interpretacao,
             textoRecomendacao
         });
