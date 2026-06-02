@@ -96,8 +96,9 @@ export class CaratService {
 
     async listarPorUtente(utenteId: number): Promise<AvaliacaoCarat[]> {
         return this.caratRepository.find({
-            where: { utente: { id: utenteId } },
-            order: { data: "DESC" }
+         where: { utente: { id: utenteId } },
+         relations: { utente: true },
+         order: { data: "DESC" }
         });
     }
 

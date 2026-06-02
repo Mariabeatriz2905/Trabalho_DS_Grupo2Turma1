@@ -11,7 +11,7 @@ export class AlertaService {
     async listarPorMedico(medicoId: number): Promise<Alerta[]> {
         return this.alertaRepo.find({
             where: { medico: { id: medicoId } },
-            relations: { utente: true, medico: true },
+            relations: { utente: { utilizador: true }, medico: { utilizador: true } },
             order: { data: "DESC" }
         });
     }
@@ -19,7 +19,7 @@ export class AlertaService {
     async listarPorUtente(utenteId: number): Promise<Alerta[]> {
         return this.alertaRepo.find({
             where: { utente: { id: utenteId } },
-            relations: { utente: true, medico: true },
+            relations: { utente: { utilizador: true }, medico: { utilizador: true } },
             order: { data: "DESC" }
         });
     }
