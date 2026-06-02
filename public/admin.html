@@ -6,46 +6,154 @@
     <title>PIAC — Painel de Administração</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #333; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; }
         nav {
-            background: #4a1a6e;
+            background: linear-gradient(135deg, #FF6B35 0%, #D84315 100%);
             color: white;
             padding: 16px 32px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 2px 8px rgba(255, 107, 53, 0.2);
         }
-        nav h1 { font-size: 1.2rem; }
-        nav button { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+        nav h1 { font-size: 1.2rem; font-weight: 700; }
+        nav button { 
+            background: rgba(255,255,255,0.15); 
+            border: 1px solid rgba(255,255,255,0.3); 
+            color: white; 
+            padding: 8px 16px; 
+            border-radius: 6px; 
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        nav button:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+        }
         .container { max-width: 1100px; margin: 32px auto; padding: 0 24px; }
         .tabs { display: flex; gap: 4px; margin-bottom: 24px; }
         .tab {
-            padding: 10px 24px; border-radius: 8px 8px 0 0;
-            cursor: pointer; font-weight: 600; font-size: 0.9rem;
-            background: #ddd; color: #555; border: none;
-        }
-        .tab.active { background: white; color: #4a1a6e; }
-        .panel { background: white; border-radius: 0 12px 12px 12px; padding: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: none; }
-        .panel.active { display: block; }
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 10px 12px; background: #f8f9fa; font-size: 0.82rem; color: #555; }
-        td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; font-size: 0.88rem; }
-        .btn { padding: 6px 14px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.82rem; font-weight: 600; }
-        .btn-danger { background: #fdecea; color: #e74c3c; }
-        .btn-primary { background: #4a1a6e; color: white; padding: 10px 20px; font-size: 0.9rem; }
-        .form-group { margin-bottom: 16px; }
-        label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #444; }
-        input, select {
-            width: 100%; padding: 10px 14px;
-            border: 2px solid #e0e0e0; border-radius: 8px;
+            padding: 12px 24px; 
+            border-radius: 8px 8px 0 0;
+            cursor: pointer; 
+            font-weight: 600; 
             font-size: 0.9rem;
+            background: #e0e0e0; 
+            color: #555; 
+            border: none;
+            transition: all 0.3s;
         }
-        input:focus, select:focus { outline: none; border-color: #4a1a6e; }
+        .tab:hover {
+            background: #d0d0d0;
+        }
+        .tab.active { 
+            background: white; 
+            color: #FF6B35;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+        }
+        .panel { 
+            background: white; 
+            border-radius: 0 12px 12px 12px; 
+            padding: 28px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
+            display: none;
+        }
+        .panel.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th { 
+            text-align: left; 
+            padding: 14px 12px; 
+            background: #f8f9fa; 
+            font-size: 0.82rem; 
+            color: #555;
+            font-weight: 600;
+        }
+        td { 
+            padding: 14px 12px; 
+            border-bottom: 1px solid #f0f0f0; 
+            font-size: 0.88rem; 
+        }
+        .btn { 
+            padding: 6px 14px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 0.82rem; 
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .btn-danger { 
+            background: #fdecea; 
+            color: #e74c3c;
+        }
+        .btn-danger:hover {
+            background: #fbcbc9;
+        }
+        .btn-primary { 
+            background: #FF6B35; 
+            color: white; 
+            padding: 10px 20px; 
+            font-size: 0.9rem;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+        .btn-primary:hover {
+            background: #D84315;
+            box-shadow: 0 6px 16px rgba(255, 107, 53, 0.4);
+        }
+        .form-group { margin-bottom: 16px; }
+        label { 
+            display: block; 
+            font-size: 0.85rem; 
+            font-weight: 600; 
+            margin-bottom: 6px; 
+            color: #444; 
+        }
+        input, select {
+            width: 100%; 
+            padding: 10px 14px;
+            border: 2px solid #e0e0e0; 
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        input:focus, select:focus { 
+            outline: none; 
+            border-color: #FF6B35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
         .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .sucesso { background: #d5f5e3; border: 1px solid #27ae60; color: #1e8449; padding: 12px; border-radius: 8px; margin-top: 12px; display:none; }
-        .badge { display:inline-block; padding:3px 8px; border-radius:12px; font-size:0.75rem; font-weight:600; }
-        .badge.ativo { background:#d5f5e3; color:#27ae60; }
-        .badge.inativo { background:#fdecea; color:#e74c3c; }
+        .sucesso { 
+            background: #d5f5e3; 
+            border: 1px solid #27ae60; 
+            color: #1e8449; 
+            padding: 12px; 
+            border-radius: 8px; 
+            margin-top: 12px; 
+            display: none;
+            animation: slideDown 0.3s;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .badge { 
+            display: inline-block; 
+            padding: 4px 10px; 
+            border-radius: 12px; 
+            font-size: 0.75rem; 
+            font-weight: 600;
+        }
+        .badge.ativo { background: #d5f5e3; color: #27ae60; }
+        .badge.inativo { background: #fdecea; color: #e74c3c; }
+        h2 { color: #FF6B35; }
     </style>
 </head>
 <body>
@@ -65,19 +173,19 @@
 
         <!-- Lista de Utentes -->
         <div class="panel active" id="panel-utentes">
-            <h2 style="margin-bottom:16px;color:#4a1a6e">Gestão de Utentes</h2>
+            <h2>Gestão de Utentes</h2>
             <div id="listaUtentes"><p style="color:#999">A carregar...</p></div>
         </div>
 
         <!-- Lista de Médicos -->
         <div class="panel" id="panel-medicos">
-            <h2 style="margin-bottom:16px;color:#4a1a6e">Gestão de Médicos</h2>
+            <h2>Gestão de Médicos</h2>
             <div id="listaMedicos"><p style="color:#999">A carregar...</p></div>
         </div>
 
         <!-- Formulário Novo Utente -->
         <div class="panel" id="panel-novoUtente">
-            <h2 style="margin-bottom:20px;color:#4a1a6e">Registar Novo Utente</h2>
+            <h2>Registar Novo Utente</h2>
             <div class="grid2">
                 <div class="form-group">
                     <label>Nome Completo *</label>
@@ -116,7 +224,7 @@
 
         <!-- Formulário Novo Médico -->
         <div class="panel" id="panel-novoMedico">
-            <h2 style="margin-bottom:20px;color:#4a1a6e">Registar Novo Médico</h2>
+            <h2>Registar Novo Médico</h2>
             <div class="grid2">
                 <div class="form-group">
                     <label>Nome Completo *</label>
@@ -268,11 +376,11 @@
          const medicos = await res.json();
          const select = document.getElementById('u-medico');
                medicos.forEach(m => {
-        const opt = document.createElement('option');
-              opt.value = m.id;
-              opt.textContent = `${m.utilizador?.nome} — ${m.especialidade || 'Geral'}`;
-        select.appendChild(opt);
-    });
+         const opt = document.createElement('option');
+               opt.value = m.id;
+               opt.textContent = `${m.utilizador?.nome} — ${m.especialidade || 'Geral'}`;
+         select.appendChild(opt);
+     });
 }
 
 carregarMedicosDropdown();

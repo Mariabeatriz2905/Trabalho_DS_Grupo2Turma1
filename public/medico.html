@@ -6,16 +6,17 @@
     <title>PIAC — Dashboard do Médico</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #333; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; }
         nav {
-            background: #1a6e4a;
+            background: linear-gradient(135deg, #FF6B35 0%, #D84315 100%);
             color: white;
             padding: 16px 32px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 2px 8px rgba(255, 107, 53, 0.2);
         }
-        nav h1 { font-size: 1.2rem; }
+        nav h1 { font-size: 1.2rem; font-weight: 700; }
         nav button {
             background: rgba(255,255,255,0.15);
             border: 1px solid rgba(255,255,255,0.3);
@@ -23,6 +24,11 @@
             padding: 8px 16px;
             border-radius: 6px;
             cursor: pointer;
+            transition: all 0.3s;
+        }
+        nav button:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
         }
         .container { max-width: 1100px; margin: 32px auto; padding: 0 24px; }
         .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
@@ -32,14 +38,40 @@
             padding: 24px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             margin-bottom: 24px;
+            animation: fadeIn 0.4s ease-out;
         }
-        .section h2 { font-size: 1.05rem; color: #1a6e4a; margin-bottom: 16px; border-bottom: 2px solid #e8f5ee; padding-bottom: 10px; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .section h2 { 
+            font-size: 1.05rem; 
+            color: #FF6B35; 
+            margin-bottom: 16px; 
+            border-bottom: 2px solid #FFE0CC; 
+            padding-bottom: 10px;
+            font-weight: 600;
+        }
         table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 10px 12px; background: #f8f9fa; font-size: 0.82rem; color: #555; }
-        td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; font-size: 0.88rem; }
+        th { 
+            text-align: left; 
+            padding: 12px 12px; 
+            background: #f8f9fa; 
+            font-size: 0.82rem; 
+            color: #555;
+            font-weight: 600;
+        }
+        td { 
+            padding: 12px 12px; 
+            border-bottom: 1px solid #f0f0f0; 
+            font-size: 0.88rem; 
+        }
         .badge {
-            display: inline-block; padding: 3px 8px;
-            border-radius: 12px; font-size: 0.75rem; font-weight: 600;
+            display: inline-block; 
+            padding: 4px 10px;
+            border-radius: 12px; 
+            font-size: 0.75rem; 
+            font-weight: 600;
         }
         .badge.controlado { background: #d5f5e3; color: #27ae60; }
         .badge.parcial { background: #fef9e7; color: #e67e22; }
@@ -49,15 +81,45 @@
         .badge.seguimento { background: #e8f4fd; color: #2980b9; }
         .badge.fechado { background: #f0f0f0; color: #888; }
         .btn {
-            padding: 6px 12px; border: none; border-radius: 6px;
-            cursor: pointer; font-size: 0.82rem; font-weight: 600;
+            padding: 8px 14px; 
+            border: none; 
+            border-radius: 6px;
+            cursor: pointer; 
+            font-size: 0.82rem; 
+            font-weight: 600;
+            transition: all 0.3s;
         }
-        .btn-verde { background: #d5f5e3; color: #27ae60; }
-        .btn-azul { background: #e8f4fd; color: #2980b9; }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .btn-verde { 
+            background: #d5f5e3; 
+            color: #27ae60;
+        }
+        .btn-azul { 
+            background: #FF6B35; 
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
+        }
+        .btn-azul:hover {
+            background: #D84315;
+            box-shadow: 0 6px 16px rgba(255, 107, 53, 0.3);
+        }
         .alerta-row.critica td { background: #fff5f5; }
         .alerta-row.alta td { background: #fffbf0; }
         select {
-            padding: 4px 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.82rem;
+            padding: 6px 8px; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 4px; 
+            font-size: 0.82rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        select:focus {
+            outline: none;
+            border-color: #FF6B35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
         }
     </style>
 </head>
@@ -97,11 +159,11 @@
     <div id="notasContainer"><p style="color:#999">Selecione um utente para ver as notas.</p></div>
     <div style="margin-top:16px;">
         <textarea id="novaNotaTexto" placeholder="Escrever nova nota clínica..."
-            style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px;
-            font-size:0.9rem; min-height:80px; resize:vertical;"></textarea>
+            style="width:100%; padding:12px; border:2px solid #e0e0e0; border-radius:8px;
+            font-size:0.9rem; min-height:80px; resize:vertical; transition: all 0.3s; font-family: 'Segoe UI', sans-serif;"></textarea>
         <button onclick="guardarNota()"
-            style="margin-top:8px; background:#1a4a6e; color:white; border:none;
-            padding:10px 24px; border-radius:8px; cursor:pointer; font-weight:600;">
+            style="margin-top:8px; background:#FF6B35; color:white; border:none;
+            padding:10px 24px; border-radius:8px; cursor:pointer; font-weight:600; transition: all 0.3s; box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);">
             Guardar Nota
         </button>
     </div>
@@ -224,13 +286,13 @@
                 </table>`;
 
             conteudo.innerHTML = `
-                <h3 style="margin-bottom:12px;color:#555">Histórico CARAT</h3>
+                <h3 style="margin-bottom:12px;color:#FF6B35;font-weight:600">Histórico CARAT</h3>
                 ${tabelaCARAT}
-                <h3 style="margin:20px 0 12px;color:#555">Alertas</h3>
+                <h3 style="margin:20px 0 12px;color:#FF6B35;font-weight:600">Alertas</h3>
                 ${alertas.length === 0
                     ? '<p style="color:#27ae60;padding:12px">Sem alertas para este utente.</p>'
                     : alertas.map(a => `
-                        <div style="padding:10px 14px;margin-bottom:8px;border-radius:6px;background:#f8f9fa;border-left:3px solid ${a.prioridade==='critica'?'#e74c3c':a.prioridade==='alta'?'#f39c12':'#3498db'}">
+                        <div style="padding:12px 14px;margin-bottom:10px;border-radius:6px;background:#f8f9fa;border-left:4px solid ${a.prioridade==='critica'?'#e74c3c':a.prioridade==='alta'?'#f39c12':'#3498db'}">
                             <strong>${a.tipo.replace('_',' ').toUpperCase()}</strong>
                             <span style="font-size:0.8rem;color:#888;margin-left:8px">${new Date(a.data).toLocaleDateString('pt-PT')}</span>
                             <span class="badge ${a.estado.toLowerCase()}" style="margin-left:8px">${a.estado}</span>
@@ -259,13 +321,12 @@ async function carregarNotas(utenteId) {
         return;
     }
     cont.innerHTML = notas.map(n => `
-        <div style="border-left:3px solid #1a4a6e; padding:10px 14px;
-             margin-bottom:10px; background:#f8f9fa; border-radius:0 8px 8px 0;">
-            <div style="font-size:0.8rem; color:#888; margin-bottom:4px;">
-                ${new Date(n.dataNota).toLocaleDateString('pt-PT')} —
-                Dr(a). ${n.medico?.utilizador?.nome || 'Médico'}
+        <div style="border-left:4px solid #FF6B35; padding:12px 14px;
+             margin-bottom:10px; background:#f8f9fa; border-radius:0 6px 6px 0;">
+            <div style="font-size:0.8rem; color:#888; margin-bottom:6px; font-weight:600;">
+                ${new Date(n.dataNota).toLocaleDateString('pt-PT')} — Dr(a). ${n.medico?.utilizador?.nome || 'Médico'}
             </div>
-            <div style="font-size:0.92rem;">${n.descricao}</div>
+            <div style="font-size:0.92rem; line-height: 1.5;">${n.descricao}</div>
         </div>
     `).join('');
     

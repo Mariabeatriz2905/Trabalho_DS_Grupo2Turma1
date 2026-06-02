@@ -8,7 +8,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #1a4a6e 0%, #0d2b42 100%);
+            background: linear-gradient(135deg, #FF6B35 0%, #D84315 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -21,12 +21,17 @@
             width: 100%;
             max-width: 420px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.5s ease-out;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .logo {
             text-align: center;
             margin-bottom: 32px;
         }
-        .logo h1 { color: #1a4a6e; font-size: 2rem; font-weight: 700; }
+        .logo h1 { color: #FF6B35; font-size: 2rem; font-weight: 700; }
         .logo p { color: #666; font-size: 0.9rem; margin-top: 4px; }
         label { display: block; font-size: 0.85rem; font-weight: 600; color: #333; margin-bottom: 6px; }
         input {
@@ -36,22 +41,34 @@
             border-radius: 8px;
             font-size: 1rem;
             margin-bottom: 20px;
-            transition: border-color 0.2s;
+            transition: all 0.3s;
         }
-        input:focus { outline: none; border-color: #1a4a6e; }
+        input:focus { 
+            outline: none; 
+            border-color: #FF6B35; 
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
         button {
             width: 100%;
             padding: 14px;
-            background: #1a4a6e;
+            background: #FF6B35;
             color: white;
             border: none;
             border-radius: 8px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
         }
-        button:hover { background: #0d2b42; }
+        button:hover { 
+            background: #D84315; 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+        button:active {
+            transform: translateY(0);
+        }
         .erro {
             background: #fff0f0;
             border: 1px solid #ffcccc;
@@ -61,6 +78,12 @@
             margin-top: 16px;
             font-size: 0.9rem;
             display: none;
+            animation: shake 0.3s;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
         .info {
             background: #f0f7ff;
@@ -69,8 +92,9 @@
             margin-top: 24px;
             font-size: 0.8rem;
             color: #555;
+            border-left: 4px solid #FF6B35;
         }
-        .info strong { color: #1a4a6e; }
+        .info strong { color: #FF6B35; }
     </style>
 </head>
 <body>
