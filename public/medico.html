@@ -396,59 +396,133 @@
         }
 
         async function verFichaUtente(utenteId, nome) {
-            const detalhe = document.getElementById('detalheUtente');
-            const titulo = document.getElementById('tituloDetalhe');
-            const conteudo = document.getElementById('conteudoDetalhe');
-            titulo.textContent = `Ficha Clínica — ${nome}`;
-            conteudo.innerHTML = '<p class="empty-state">A carregar...</p>';
-            detalhe.style.display = 'block';
-            detalhe.scrollIntoView({ behavior: 'smooth' });
+    const detalhe = document.getElementById('detalheUtente');
+    const titulo = document.getElementById('tituloDetalhe');
+    const conteudo = document.getElementById('conteudoDetalhe');
+    titulo.textContent = `Ficha Clínica — ${nome}`;
+    conteudo.innerHTML = '<p class="empty-state">A carregar...</p>';
+    detalhe.style.display = 'block';
+    detalhe.scrollIntoView({ behavior: 'smooth' });
 
-            const [resCARAT, resAlertas] = await Promise.all([
-                fetch(`/utentes/${utenteId}/carat`, { headers: { 'Authorization': `Bearer ${token}` } }),
-                fetch(`/utentes/${utenteId}/alertas`, { headers: { 'Authorization': `Bearer ${token}` } })
-            ]);
-            const avaliacoes = await resCARAT.json();
-            const alertas = await resAlertas.json();
-
-            const tabelaCARAT = avaliacoes.length === 0
-                ? '<p class="empty-state">Sem avaliações CARAT.</p>'
-                : `<table>
-                    <thead><tr><th>Data</th><th>Score</th><th>Interpretação</th><th>Recomendação</th></tr></thead>
-                    <tbody>
-                        ${avaliacoes.map(a => {
-                            const cls = a.interpretacao === 'Controlado' ? 'controlado' :
-                                        a.interpretacao === 'Parcialmente Controlado' ? 'parcial' : 'nao';
-                            return `<tr>
-                                <td>${new Date(a.data).toLocaleDateString('pt-PT')}</td>
-                                <td><strong>${a.scoreTotal}/30</strong></td>
-                                <td><span class="badge badge-${cls}">${a.interpretacao}</span></td>
-                                <td style="font-size:0.82rem;color:#555">${a.textoRecomendacao || '—'}</td>
-                            </tr>`;
-                        }).join('')}
-                    </tbody>
-                </table>`;
-
-            const alertasHTML = alertas.length === 0
-                ? '<p class="empty-state" style="color:#27a058">Sem alertas para este utente.</p>'
-                : alertas.map(a => `
-                    <div class="alerta-card ${a.prioridade}">
-                        <div class="alerta-card-header">
-                            <span class="alerta-tipo">${a.tipo.replace('_',' ').toUpperCase()}</span>
-                            <span class="alerta-data">${new Date(a.data).toLocaleDateString('pt-PT')}</span>
-                            <span class="badge badge-${a.estado.toLowerCase().replace('_seguimento','seguimento')}">${a.estado}</span>
-                        </div>
-                        <p class="alerta-motivo">${a.motivo}</p>
-                    </div>`).join('');
-
-            conteudo.innerHTML = `
-                <div class="sub-title">Histórico CARAT</div>
-                ${tabelaCARAT}
-                <div class="sub-title">Alertas</div>
-                ${alertasHTML}`;
-
-            await carregarNotas(utenteId);
+   
+    async function fetchSeguro(url) {
+        try {
+            const res = await fetch(url, { headers: { 'Authorization': `Bearer ${token}` } });
+            if (!res.ok) {
+                console.warn(`[PIAC DEBUG] A rota ${url} respondeu com status ${res.status}. Certifica-te de que a rota existe no backend.`);
+                return [];
+            }
+            return await res.json();
+        } catch (err) {
+            console.error(`[PIAC ERRO] Falha ao ligar à rota ${url}:`, err);
+            return [];
         }
+    }
+
+  
+    const avaliacoes = await fetchSeguro(`/utentes/${utenteId}/carat`);
+    const alertas = await fetchSeguro(`/utentes/${utenteId}/alertas`);
+    const medicacoes = await fetchSeguro(`/utentes/${utenteId}/medicacao`);
+    const exames = await fetchSeguro(`/utentes/${utenteId}/exames`);
+    const sintomas = await fetchSeguro(`/utentes/${utenteId}/sintomas`);
+
+    
+    const tabelaCARAT = !avaliacoes || avaliacoes.length === 0
+        ? '<p class="empty-state">Sem avaliações CARAT.</p>'
+        : `<table>
+            <thead><tr><th>Data</th><th>Score</th><th>Interpretação</th><th>Recomendação</th></tr></thead>
+            <tbody>
+                ${avaliacoes.map(a => {
+                    const cls = a.interpretacao === 'Controlado' ? 'controlado' :
+                                a.interpretacao === 'Parcialmente Controlado' ? 'parcial' : 'nao';
+                    return `<tr>
+                        <td>${new Date(a.data || new Date()).toLocaleDateString('pt-PT')}</td>
+                        <td><strong>${a.scoreTotal}/30</strong></td>
+                        <td><span class="badge badge-${cls}">${a.interpretacao}</span></td>
+                        <td style="font-size:0.82rem;color:#555">${a.textoRecomendacao || '—'}</td>
+                    </tr>`;
+                }).join('')}
+            </tbody>
+        </table>`;
+    
+   
+    const tabelaMedicacao = !medicacoes || medicacoes.length === 0
+         ? '<p class="empty-state">Nenhum medicamento ativo prescrito.</p>'
+         : `<table>
+            <thead><tr><th>Medicamento</th><th>Dose</th><th>Período</th></tr></thead>
+            <tbody>
+                 ${medicacoes.map(m => `
+                    <tr>
+                        <td style="font-weight:600; color:#2563c4;"> ${m.nome || m.descricao || 'Medicamento'}</td>
+                        <td>${m.dose || '—'}</td>
+                        <td><span class="badge badge-media">${m.periodo || '—'}</span></td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>`;
+
+    const tabelaSintomas = !sintomas || sintomas.length === 0
+        ? '<p class="empty-state">Sem sintomas reportados recentemente.</p>'
+        : `<table>
+            <thead><tr><th>Sintoma / Descrição</th><th>Data de Aparecimento</th><th>Intensidade</th></tr></thead>
+            <tbody>
+                ${sintomas.map(s => `
+                    <tr>
+                        <td style="font-weight:600">⚠️ ${s.descricao || 'Sintoma'}</td>
+                        <td>${s.dataAparecimento ? new Date(s.dataAparecimento).toLocaleDateString('pt-PT') : '—'}</td>
+                        <td><span class="badge badge-critica">Nível ${s.intensidade || '—'}/5</span></td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>`;
+
+    const tabelaExames = !exames || exames.length === 0
+        ? '<p class="empty-state">Nenhum exame de diagnóstico registado.</p>'
+        : `<table>
+            <thead><tr><th>Data</th><th>Exame / Tipo</th><th>Resultado Clínico</th></tr></thead>
+            <tbody>
+                ${exames.map(e => `
+                    <tr>
+                        <td>${e.data ? new Date(e.data).toLocaleDateString('pt-PT') : '—'}</td>
+                        <td style="font-weight:600; color:#27a058;">🩺 ${e.tipo || 'Exame'}</td>
+                        <td style="font-size:0.85rem; color:#555;">${e.resultado || '—'}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>`;
+
+   
+    const alertasHTML = !alertas || alertas.length === 0
+        ? '<p class="empty-state" style="color:#27a058">Sem alertas para este utente.</p>'
+        : alertas.map(a => `
+            <div class="alerta-card ${a.prioridade}">
+                <div class="alerta-card-header">
+                    <span class="alerta-tipo">${a.tipo ? a.tipo.replace('_',' ').toUpperCase() : 'ALERTA'}</span>
+                    <span class="alerta-data">${new Date(a.data || new Date()).toLocaleDateString('pt-PT')}</span>
+                    <span class="badge badge-${a.estado ? a.estado.toLowerCase().replace('_seguimento','seguimento') : 'novo'}">${a.estado}</span>
+                </div>
+                <p class="alerta-motivo">${a.motivo || '—'}</p>
+            </div>`).join('');
+
+    
+    conteudo.innerHTML = `
+        <div class="sub-title">Histórico CARAT</div>
+        ${tabelaCARAT}
+        
+        <div class="sub-title">Medicação Atual</div>
+        ${tabelaMedicacao}
+        
+        <div class="sub-title">Sintomatologia Reportada</div>
+        ${tabelaSintomas}
+        
+        <div class="sub-title">Exames Auxiliares de Diagnóstico</div>
+        ${tabelaExames}
+        
+        <div class="sub-title">Alertas do Utente</div>
+        ${alertasHTML}`;
+
+    await carregarNotas(utenteId);
+}
 
         async function carregarNotas(utenteId) {
             utenteAtualId = utenteId;

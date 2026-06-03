@@ -13,6 +13,7 @@ import { NotaClinica } from './models/notaClinica.entity';
 
 async function seed() {
     await AppDataSource.initialize();
+    await AppDataSource.synchronize(true);
     console.log("Base de dados ligada. A popular com dados simulados...");
 
  // ADMINISTRADOR
