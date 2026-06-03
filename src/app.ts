@@ -10,6 +10,9 @@ import authRoutes from './routes/auth.routes';
 import fhirRoutes from './routes/fhir.routes';
 import limiarRoutes from './routes/limiar.routes';
 import notaClinicaRoutes from './routes/notaClinica.routes';
+import medicacaoRoutes from './routes/medicacao.routes';
+import exameRoutes from './routes/exame.routes'; 
+import sintomaRoutes from './routes/sintoma.routes'; 
 
 
 const app = express();
@@ -28,6 +31,10 @@ app.use('/', alertaRoutes);
 app.use('/fhir', fhirRoutes);
 app.use('/limiares', limiarRoutes);
 app.use('/', notaClinicaRoutes);
+app.use('/', medicacaoRoutes);
+app.use('/', exameRoutes); 
+app.use('/', sintomaRoutes);
+
 
 
 AppDataSource.initialize()
