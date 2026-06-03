@@ -8,101 +8,149 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #FF6B35 0%, #D84315 100%);
+            background: #f5f4f2;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .card {
-            background: white;
+        .piac-card {
+            background: #fff;
             border-radius: 16px;
-            padding: 48px 40px;
+            border: 0.5px solid #e0ddd8;
+            padding: 48px 44px 40px;
             width: 100%;
             max-width: 420px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: slideUp 0.5s ease-out;
         }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .logo {
-            text-align: center;
+        .piac-logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
             margin-bottom: 32px;
         }
-        .logo h1 { color: #FF6B35; font-size: 2rem; font-weight: 700; }
-        .logo p { color: #666; font-size: 0.9rem; margin-top: 4px; }
-        label { display: block; font-size: 0.85rem; font-weight: 600; color: #333; margin-bottom: 6px; }
+        .piac-logo-icon {
+            width: 48px;
+            height: 48px;
+            background: #e84a12;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .piac-logo-icon svg { width: 28px; height: 28px; }
+        .piac-logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+        .piac-logo-text p {
+            font-size: 0.78rem;
+            color: #888;
+            margin: 2px 0 0;
+            line-height: 1.3;
+        }
+        .piac-divider {
+            height: 1px;
+            background: #f0ede8;
+            margin-bottom: 28px;
+        }
+        label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 6px;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
         input {
             width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e0e0e0;
+            padding: 11px 14px;
+            border: 1.5px solid #e0ddd8;
             border-radius: 8px;
-            font-size: 1rem;
-            margin-bottom: 20px;
-            transition: all 0.3s;
+            font-size: 0.95rem;
+            color: #1a1a1a;
+            background: #fafaf9;
+            margin-bottom: 18px;
+            transition: border-color 0.15s;
+            outline: none;
+            font-family: 'Segoe UI', sans-serif;
         }
-        input:focus { 
-            outline: none; 
-            border-color: #FF6B35; 
-            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
-        }
+        input:focus { border-color: #e84a12; background: #fff; }
         button {
             width: 100%;
-            padding: 14px;
-            background: #FF6B35;
+            padding: 13px;
+            background: #e84a12;
             color: white;
             border: none;
             border-radius: 8px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            letter-spacing: 0.2px;
+            transition: background 0.15s;
+            margin-top: 4px;
+            font-family: 'Segoe UI', sans-serif;
         }
-        button:hover { 
-            background: #D84315; 
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
-        }
-        button:active {
-            transform: translateY(0);
-        }
+        button:hover { background: #c73e0e; }
         .erro {
-            background: #fff0f0;
-            border: 1px solid #ffcccc;
-            color: #c0392b;
-            padding: 12px;
+            background: #fff5f3;
+            border: 1px solid #fbc4b4;
+            color: #a33010;
+            padding: 11px 14px;
             border-radius: 8px;
-            margin-top: 16px;
-            font-size: 0.9rem;
+            margin-top: 14px;
+            font-size: 0.88rem;
             display: none;
-            animation: shake 0.3s;
         }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-        .info {
-            background: #f0f7ff;
-            border-radius: 8px;
-            padding: 12px;
+        .piac-info {
             margin-top: 24px;
-            font-size: 0.8rem;
-            color: #555;
-            border-left: 4px solid #FF6B35;
+            padding: 14px 16px;
+            background: #fafaf9;
+            border: 0.5px solid #e8e5e0;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            color: #777;
+            line-height: 1.8;
         }
-        .info strong { color: #FF6B35; }
+        .piac-info-title {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .piac-dot {
+            display: inline-block;
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #e84a12;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+        .piac-info strong { color: #444; font-weight: 600; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <div class="logo">
-            <h1>PIAC</h1>
-            <p>Plataforma Inteligente de Acompanhamento Clínico</p>
+    <div class="piac-card">
+        <div class="piac-logo">
+            <div class="piac-logo-icon">
+                <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14 4C9 4 6 8 6 12c0 5 4 9 8 11 4-2 8-6 8-11 0-4-3-8-8-8z" stroke="white" stroke-width="1.8" fill="none"/>
+                    <path d="M14 8v8M10 12h8" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <div class="piac-logo-text">
+                <h1>PIAC</h1>
+                <p>Plataforma Inteligente de<br>Acompanhamento Clínico</p>
+            </div>
         </div>
+
+        <div class="piac-divider"></div>
 
         <label for="email">Email</label>
         <input type="email" id="email" placeholder="exemplo@piac.pt">
@@ -110,15 +158,15 @@
         <label for="password">Password</label>
         <input type="password" id="password" placeholder="••••••••">
 
-        <button onclick="fazerLogin()">Entrar</button>
+        <button onclick="fazerLogin()">Entrar na plataforma</button>
 
         <div class="erro" id="msgErro"></div>
 
-        <div class="info">
-            <strong>Contas de teste:</strong><br>
-            Admin: admin@piac.pt / admin123<br>
-            Médico: ana.respiratoria@piac.pt / medico123<br>
-            Utente: joao.silva@email.pt / utente123
+        <div class="piac-info">
+            <div class="piac-info-title">Contas de demonstração</div>
+            <span class="piac-dot"></span><strong>Admin:</strong> admin@piac.pt / admin123<br>
+            <span class="piac-dot"></span><strong>Médico:</strong> ana.respiratoria@piac.pt / medico123<br>
+            <span class="piac-dot"></span><strong>Utente:</strong> joao.silva@email.pt / utente123
         </div>
     </div>
 
@@ -149,12 +197,10 @@
                     return;
                 }
 
-                // Guardar token e dados do utilizador
                 localStorage.setItem('token', dados.token);
                 localStorage.setItem('utilizador', JSON.stringify(dados.utilizador));
                 localStorage.setItem('perfilId', dados.utilizador.perfilId);
 
-                // Redirecionar conforme o perfil
                 const perfil = dados.utilizador.perfil;
                 if (perfil === 'utente') window.location.href = '/utente.html';
                 else if (perfil === 'medico') window.location.href = '/medico.html';
@@ -166,7 +212,6 @@
             }
         }
 
-        // Permitir Enter para fazer login
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') fazerLogin();
         });

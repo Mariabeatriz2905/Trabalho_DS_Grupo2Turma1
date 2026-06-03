@@ -3,251 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PIAC — Painel de Administração</title>
+    <title>PIAC — Administração</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f4f2; color: #1a1a1a; }
+
         nav {
-            background: linear-gradient(135deg, #FF6B35 0%, #D84315 100%);
-            color: white;
-            padding: 16px 32px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 8px rgba(255, 107, 53, 0.2);
+            background: #fff;
+            border-bottom: 1px solid #e8e5e0;
+            padding: 0 32px;
+            display: flex; justify-content: space-between; align-items: center;
+            height: 60px;
         }
-        nav h1 { font-size: 1.2rem; font-weight: 700; }
-        nav button { 
-            background: rgba(255,255,255,0.15); 
-            border: 1px solid rgba(255,255,255,0.3); 
-            color: white; 
-            padding: 8px 16px; 
-            border-radius: 6px; 
-            cursor: pointer;
-            transition: all 0.3s;
+        .nav-logo { display: flex; align-items: center; gap: 10px; }
+        .nav-logo-icon {
+            width: 32px; height: 32px; background: #e84a12;
+            border-radius: 8px; display: flex; align-items: center; justify-content: center;
         }
-        nav button:hover {
-            background: rgba(255,255,255,0.25);
-            transform: translateY(-2px);
+        .nav-logo-icon svg { width: 18px; height: 18px; }
+        .nav-logo span { font-size: 1rem; font-weight: 700; color: #1a1a1a; letter-spacing: -0.3px; }
+        .nav-logo small { font-size: 0.75rem; color: #888; font-weight: 400; margin-left: 4px; }
+        .nav-right { display: flex; align-items: center; gap: 16px; }
+        #nomeAdmin { font-size: 0.85rem; color: #555; }
+        .btn-sair {
+            padding: 7px 16px; background: #f5f4f2;
+            border: 1px solid #e0ddd8; border-radius: 7px;
+            font-size: 0.82rem; font-weight: 600; color: #444;
+            cursor: pointer; transition: background 0.15s;
         }
+        .btn-sair:hover { background: #ece9e4; }
+
         .container { max-width: 1100px; margin: 32px auto; padding: 0 24px; }
-        .tabs { display: flex; gap: 4px; margin-bottom: 24px; }
+
+        .tabs { display: flex; gap: 4px; margin-bottom: 0; }
         .tab {
-            padding: 12px 24px; 
+            padding: 10px 22px;
             border-radius: 8px 8px 0 0;
-            cursor: pointer; 
-            font-weight: 600; 
-            font-size: 0.9rem;
-            background: #e0e0e0; 
-            color: #555; 
-            border: none;
-            transition: all 0.3s;
+            cursor: pointer; font-weight: 600; font-size: 0.85rem;
+            background: #ece9e4; color: #777; border: none;
+            border-bottom: none; transition: all 0.15s;
+            font-family: 'Segoe UI', sans-serif;
         }
-        .tab:hover {
-            background: #d0d0d0;
-        }
-        .tab.active { 
-            background: white; 
-            color: #FF6B35;
-            box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
-        }
-        .panel { 
-            background: white; 
-            border-radius: 0 12px 12px 12px; 
-            padding: 28px; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
+        .tab.active { background: #fff; color: #e84a12; border: 0.5px solid #e8e5e0; border-bottom: none; }
+        .tab:hover:not(.active) { background: #e0ddd8; }
+
+        .panel {
+            background: #fff;
+            border-radius: 0 12px 12px 12px;
+            border: 0.5px solid #e8e5e0;
+            padding: 28px;
             display: none;
         }
-        .panel.active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        .panel.active { display: block; }
+
+        .panel-title { font-size: 1rem; font-weight: 700; color: #1a1a1a; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid #f0ede8; }
+
         table { width: 100%; border-collapse: collapse; }
-        th { 
-            text-align: left; 
-            padding: 14px 12px; 
-            background: #f8f9fa; 
-            font-size: 0.82rem; 
-            color: #555;
-            font-weight: 600;
+        th {
+            text-align: left; padding: 9px 12px;
+            background: #fafaf9; font-size: 0.72rem; color: #aaa;
+            font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px;
+            border-bottom: 1px solid #f0ede8;
         }
-        td { 
-            padding: 14px 12px; 
-            border-bottom: 1px solid #f0f0f0; 
-            font-size: 0.88rem; 
+        td { padding: 10px 12px; border-bottom: 1px solid #f8f6f3; font-size: 0.87rem; color: #333; }
+        tr:last-child td { border-bottom: none; }
+
+        .badge { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; }
+        .badge-ativo { background: #eaf5ef; color: #166534; }
+        .badge-inativo { background: #fef2f2; color: #991b1b; }
+
+        .btn-danger {
+            padding: 5px 12px; background: #fef2f2;
+            border: 1px solid #fca5a5; border-radius: 6px;
+            font-size: 0.78rem; font-weight: 600; color: #991b1b;
+            cursor: pointer; transition: all 0.15s;
         }
-        .btn { 
-            padding: 6px 14px; 
-            border: none; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            font-size: 0.82rem; 
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        .btn-danger { 
-            background: #fdecea; 
-            color: #e74c3c;
-        }
-        .btn-danger:hover {
-            background: #fbcbc9;
-        }
-        .btn-primary { 
-            background: #FF6B35; 
-            color: white; 
-            padding: 10px 20px; 
-            font-size: 0.9rem;
-            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
-        }
-        .btn-primary:hover {
-            background: #D84315;
-            box-shadow: 0 6px 16px rgba(255, 107, 53, 0.4);
-        }
+        .btn-danger:hover { background: #fee2e2; }
+
+        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .form-group { margin-bottom: 16px; }
-        label { 
-            display: block; 
-            font-size: 0.85rem; 
-            font-weight: 600; 
-            margin-bottom: 6px; 
-            color: #444; 
+        label {
+            display: block; font-size: 0.78rem; font-weight: 600;
+            color: #444; margin-bottom: 6px; letter-spacing: 0.3px; text-transform: uppercase;
         }
         input, select {
-            width: 100%; 
-            padding: 10px 14px;
-            border: 2px solid #e0e0e0; 
-            border-radius: 8px;
-            font-size: 0.9rem;
-            transition: all 0.3s;
+            width: 100%; padding: 10px 14px;
+            border: 1.5px solid #e0ddd8; border-radius: 8px;
+            font-size: 0.9rem; color: #1a1a1a; background: #fafaf9;
+            outline: none; transition: border-color 0.15s;
+            font-family: 'Segoe UI', sans-serif;
         }
-        input:focus, select:focus { 
-            outline: none; 
-            border-color: #FF6B35;
-            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        input:focus, select:focus { border-color: #e84a12; background: #fff; }
+
+        .btn-primary {
+            padding: 11px 24px; background: #e84a12;
+            color: white; border: none; border-radius: 8px;
+            font-size: 0.9rem; font-weight: 600; cursor: pointer;
+            transition: background 0.15s; margin-top: 4px;
+            font-family: 'Segoe UI', sans-serif;
         }
-        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .sucesso { 
-            background: #d5f5e3; 
-            border: 1px solid #27ae60; 
-            color: #1e8449; 
-            padding: 12px; 
-            border-radius: 8px; 
-            margin-top: 12px; 
-            display: none;
-            animation: slideDown 0.3s;
+        .btn-primary:hover { background: #c73e0e; }
+
+        .sucesso {
+            background: #eaf5ef; border: 1px solid #86efac;
+            color: #166534; padding: 11px 14px;
+            border-radius: 8px; margin-top: 12px;
+            font-size: 0.88rem; display: none;
         }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .badge { 
-            display: inline-block; 
-            padding: 4px 10px; 
-            border-radius: 12px; 
-            font-size: 0.75rem; 
-            font-weight: 600;
-        }
-        .badge.ativo { background: #d5f5e3; color: #27ae60; }
-        .badge.inativo { background: #fdecea; color: #e74c3c; }
-        h2 { color: #FF6B35; }
+        .empty-state { padding: 16px 0; text-align: center; color: #bbb; font-size: 0.88rem; }
     </style>
 </head>
 <body>
     <nav>
-        <h1>⚙️ PIAC — Administração</h1>
-        <span id="nomeAdmin"></span>
-        <button onclick="sair()">Sair</button>
+        <div class="nav-logo">
+            <div class="nav-logo-icon">
+                <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14 4C9 4 6 8 6 12c0 5 4 9 8 11 4-2 8-6 8-11 0-4-3-8-8-8z" stroke="white" stroke-width="1.8" fill="none"/>
+                    <path d="M14 8v8M10 12h8" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <span>PIAC <small>— Administração</small></span>
+        </div>
+        <div class="nav-right">
+            <span id="nomeAdmin"></span>
+            <button class="btn-sair" onclick="sair()">Sair</button>
+        </div>
     </nav>
 
     <div class="container">
         <div class="tabs">
-            <button class="tab active" onclick="mudarTab('utentes')">👥 Utentes</button>
-            <button class="tab" onclick="mudarTab('medicos')">🩺 Médicos</button>
-            <button class="tab" onclick="mudarTab('novoUtente')">➕ Novo Utente</button>
-            <button class="tab" onclick="mudarTab('novoMedico')">➕ Novo Médico</button>
+            <button class="tab active" onclick="mudarTab('utentes', this)">Utentes</button>
+            <button class="tab" onclick="mudarTab('medicos', this)">Médicos</button>
+            <button class="tab" onclick="mudarTab('novoUtente', this)">+ Novo Utente</button>
+            <button class="tab" onclick="mudarTab('novoMedico', this)">+ Novo Médico</button>
         </div>
 
-        <!-- Lista de Utentes -->
         <div class="panel active" id="panel-utentes">
-            <h2>Gestão de Utentes</h2>
-            <div id="listaUtentes"><p style="color:#999">A carregar...</p></div>
+            <div class="panel-title">Gestão de Utentes</div>
+            <div id="listaUtentes"><p class="empty-state">A carregar...</p></div>
         </div>
 
-        <!-- Lista de Médicos -->
         <div class="panel" id="panel-medicos">
-            <h2>Gestão de Médicos</h2>
-            <div id="listaMedicos"><p style="color:#999">A carregar...</p></div>
+            <div class="panel-title">Gestão de Médicos</div>
+            <div id="listaMedicos"><p class="empty-state">A carregar...</p></div>
         </div>
 
-        <!-- Formulário Novo Utente -->
         <div class="panel" id="panel-novoUtente">
-            <h2>Registar Novo Utente</h2>
+            <div class="panel-title">Registar Novo Utente</div>
             <div class="grid2">
-                <div class="form-group">
-                    <label>Nome Completo *</label>
-                    <input type="text" id="u-nome" placeholder="João Silva">
-                </div>
-                <div class="form-group">
-                    <label>Email *</label>
-                    <input type="email" id="u-email" placeholder="joao@email.pt">
-                </div>
-                <div class="form-group">
-                    <label>Password *</label>
-                    <input type="password" id="u-password" placeholder="mínimo 6 caracteres">
-                </div>
-                <div class="form-group">
-                    <label>NIF *</label>
-                    <input type="text" id="u-nif" placeholder="123456789" maxlength="9">
-                </div>
-                <div class="form-group">
-                    <label>Data de Nascimento *</label>
-                    <input type="date" id="u-dataNascimento">
-                </div>
-                <div class="form-group">
-                    <label>Contacto</label>
-                    <input type="text" id="u-contacto" placeholder="910000000">
-                </div>
+                <div class="form-group"><label>Nome Completo *</label><input type="text" id="u-nome" placeholder="João Silva"></div>
+                <div class="form-group"><label>Email *</label><input type="email" id="u-email" placeholder="joao@email.pt"></div>
+                <div class="form-group"><label>Password *</label><input type="password" id="u-password" placeholder="mínimo 6 caracteres"></div>
+                <div class="form-group"><label>NIF *</label><input type="text" id="u-nif" placeholder="123456789" maxlength="9"></div>
+                <div class="form-group"><label>Data de Nascimento *</label><input type="date" id="u-dataNascimento"></div>
+                <div class="form-group"><label>Contacto</label><input type="text" id="u-contacto" placeholder="910000000"></div>
                 <div class="form-group">
                     <label>Médico Atribuído</label>
-                 <select id="u-medico">
-                 <option value="">Sem médico atribuído</option>
-                  </select>
+                    <select id="u-medico"><option value="">Sem médico atribuído</option></select>
                 </div>
             </div>
-            <button class="btn btn-primary" onclick="criarUtente()">Criar Utente</button>
+            <button class="btn-primary" onclick="criarUtente()">Criar Utente</button>
             <div class="sucesso" id="sucesso-utente">✅ Utente criado com sucesso!</div>
         </div>
 
-        <!-- Formulário Novo Médico -->
         <div class="panel" id="panel-novoMedico">
-            <h2>Registar Novo Médico</h2>
+            <div class="panel-title">Registar Novo Médico</div>
             <div class="grid2">
-                <div class="form-group">
-                    <label>Nome Completo *</label>
-                    <input type="text" id="m-nome" placeholder="Dr. Ana Silva">
-                </div>
-                <div class="form-group">
-                    <label>Email *</label>
-                    <input type="email" id="m-email" placeholder="ana@clinica.pt">
-                </div>
-                <div class="form-group">
-                    <label>Password *</label>
-                    <input type="password" id="m-password">
-                </div>
-                <div class="form-group">
-                    <label>Especialidade</label>
-                    <input type="text" id="m-especialidade" placeholder="Pneumologia">
-                </div>
-                <div class="form-group">
-                    <label>Contacto</label>
-                    <input type="text" id="m-contacto" placeholder="961000000">
-                </div>
+                <div class="form-group"><label>Nome Completo *</label><input type="text" id="m-nome" placeholder="Dr. Ana Silva"></div>
+                <div class="form-group"><label>Email *</label><input type="email" id="m-email" placeholder="ana@clinica.pt"></div>
+                <div class="form-group"><label>Password *</label><input type="password" id="m-password"></div>
+                <div class="form-group"><label>Especialidade</label><input type="text" id="m-especialidade" placeholder="Pneumologia"></div>
+                <div class="form-group"><label>Contacto</label><input type="text" id="m-contacto" placeholder="961000000"></div>
             </div>
-            <button class="btn btn-primary" onclick="criarMedico()">Criar Médico</button>
+            <button class="btn-primary" onclick="criarMedico()">Criar Médico</button>
             <div class="sucesso" id="sucesso-medico">✅ Médico criado com sucesso!</div>
         </div>
     </div>
@@ -255,16 +183,14 @@
     <script>
         const token = localStorage.getItem('token');
         const utilizador = JSON.parse(localStorage.getItem('utilizador') || '{}');
-
         if (!token || utilizador.perfil !== 'administrador') window.location.href = '/';
         document.getElementById('nomeAdmin').textContent = utilizador.nome;
 
-        function mudarTab(nome) {
+        function mudarTab(nome, el) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            event.target.classList.add('active');
+            el.classList.add('active');
             document.getElementById(`panel-${nome}`).classList.add('active');
-
             if (nome === 'utentes') carregarUtentes();
             if (nome === 'medicos') carregarMedicos();
         }
@@ -272,20 +198,18 @@
         async function carregarUtentes() {
             const res = await fetch('/utentes', { headers: { 'Authorization': `Bearer ${token}` } });
             const utentes = await res.json();
-
             document.getElementById('listaUtentes').innerHTML = `
                 <table>
                     <thead><tr><th>Nome</th><th>Email</th><th>NIF</th><th>Estado</th><th>Ação</th></tr></thead>
                     <tbody>
                         ${utentes.map(u => `<tr>
-                            <td>${u.utilizador?.nome || '—'}</td>
-                            <td>${u.utilizador?.email || '—'}</td>
-                            <td>${u.nif}</td>
-                            <td><span class="badge ${u.utilizador?.estado ? 'ativo' : 'inativo'}">${u.utilizador?.estado ? 'Ativo' : 'Inativo'}</span></td>
-                            <td>
-                                ${u.utilizador?.estado
-                                    ? `<button class="btn btn-danger" onclick="desativar('utentes', ${u.id})">Desativar</button>`
-                                    : '<span style="color:#999;font-size:0.82rem">Desativado</span>'}
+                            <td style="font-weight:600">${u.utilizador?.nome || '—'}</td>
+                            <td style="color:#888">${u.utilizador?.email || '—'}</td>
+                            <td style="color:#888;font-size:0.82rem">${u.nif}</td>
+                            <td><span class="badge ${u.utilizador?.estado ? 'badge-ativo' : 'badge-inativo'}">${u.utilizador?.estado ? 'Ativo' : 'Inativo'}</span></td>
+                            <td>${u.utilizador?.estado
+                                ? `<button class="btn-danger" onclick="desativar('utentes', ${u.id})">Desativar</button>`
+                                : '<span style="color:#bbb;font-size:0.8rem">Desativado</span>'}
                             </td>
                         </tr>`).join('')}
                     </tbody>
@@ -295,20 +219,18 @@
         async function carregarMedicos() {
             const res = await fetch('/medicos', { headers: { 'Authorization': `Bearer ${token}` } });
             const medicos = await res.json();
-
             document.getElementById('listaMedicos').innerHTML = `
                 <table>
                     <thead><tr><th>Nome</th><th>Email</th><th>Especialidade</th><th>Estado</th><th>Ação</th></tr></thead>
                     <tbody>
                         ${medicos.map(m => `<tr>
-                            <td>${m.utilizador?.nome || '—'}</td>
-                            <td>${m.utilizador?.email || '—'}</td>
-                            <td>${m.especialidade || '—'}</td>
-                            <td><span class="badge ${m.utilizador?.estado ? 'ativo' : 'inativo'}">${m.utilizador?.estado ? 'Ativo' : 'Inativo'}</span></td>
-                            <td>
-                                ${m.utilizador?.estado
-                                    ? `<button class="btn btn-danger" onclick="desativar('medicos', ${m.id})">Desativar</button>`
-                                    : '<span style="color:#999;font-size:0.82rem">Desativado</span>'}
+                            <td style="font-weight:600">${m.utilizador?.nome || '—'}</td>
+                            <td style="color:#888">${m.utilizador?.email || '—'}</td>
+                            <td style="color:#888">${m.especialidade || '—'}</td>
+                            <td><span class="badge ${m.utilizador?.estado ? 'badge-ativo' : 'badge-inativo'}">${m.utilizador?.estado ? 'Ativo' : 'Inativo'}</span></td>
+                            <td>${m.utilizador?.estado
+                                ? `<button class="btn-danger" onclick="desativar('medicos', ${m.id})">Desativar</button>`
+                                : '<span style="color:#bbb;font-size:0.8rem">Desativado</span>'}
                             </td>
                         </tr>`).join('')}
                     </tbody>
@@ -317,10 +239,7 @@
 
         async function desativar(tipo, id) {
             if (!confirm('Tem a certeza que quer desativar esta conta?')) return;
-            await fetch(`/${tipo}/${id}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
+            await fetch(`/${tipo}/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
             tipo === 'utentes' ? carregarUtentes() : carregarMedicos();
         }
 
@@ -370,20 +289,21 @@
             }
         }
 
-        function sair() { localStorage.clear(); window.location.href = '/'; }
         async function carregarMedicosDropdown() {
-         const res = await fetch('/medicos', { headers: { 'Authorization': `Bearer ${token}` } });
-         const medicos = await res.json();
-         const select = document.getElementById('u-medico');
-               medicos.forEach(m => {
-         const opt = document.createElement('option');
-               opt.value = m.id;
-               opt.textContent = `${m.utilizador?.nome} — ${m.especialidade || 'Geral'}`;
-         select.appendChild(opt);
-     });
-}
+            const res = await fetch('/medicos', { headers: { 'Authorization': `Bearer ${token}` } });
+            const medicos = await res.json();
+            const select = document.getElementById('u-medico');
+            medicos.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m.id;
+                opt.textContent = `${m.utilizador?.nome} — ${m.especialidade || 'Geral'}`;
+                select.appendChild(opt);
+            });
+        }
 
-carregarMedicosDropdown();
+        function sair() { localStorage.clear(); window.location.href = '/'; }
+
+        carregarMedicosDropdown();
         carregarUtentes();
     </script>
 </body>

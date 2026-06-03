@@ -3,203 +3,357 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PIAC — Dashboard do Médico</title>
+    <title>PIAC — Área do Médico</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; color: #333; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f4f2; color: #1a1a1a; }
+
         nav {
-            background: linear-gradient(135deg, #FF6B35 0%, #D84315 100%);
-            color: white;
-            padding: 16px 32px;
+            background: #fff;
+            border-bottom: 1px solid #e8e5e0;
+            padding: 0 32px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 8px rgba(255, 107, 53, 0.2);
+            height: 60px;
         }
-        nav h1 { font-size: 1.2rem; font-weight: 700; }
-        nav button {
-            background: rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s;
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        nav button:hover {
-            background: rgba(255,255,255,0.25);
-            transform: translateY(-2px);
+        .nav-logo-icon {
+            width: 32px; height: 32px;
+            background: #e84a12;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
         }
-        .container { max-width: 1100px; margin: 32px auto; padding: 0 24px; }
-        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-        .section {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            margin-bottom: 24px;
-            animation: fadeIn 0.4s ease-out;
+        .nav-logo-icon svg { width: 18px; height: 18px; }
+        .nav-logo span {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            letter-spacing: -0.3px;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .nav-logo small {
+            font-size: 0.75rem;
+            color: #888;
+            font-weight: 400;
+            margin-left: 4px;
         }
-        .section h2 { 
-            font-size: 1.05rem; 
-            color: #FF6B35; 
-            margin-bottom: 16px; 
-            border-bottom: 2px solid #FFE0CC; 
-            padding-bottom: 10px;
-            font-weight: 600;
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
-        table { width: 100%; border-collapse: collapse; }
-        th { 
-            text-align: left; 
-            padding: 12px 12px; 
-            background: #f8f9fa; 
-            font-size: 0.82rem; 
+        #nomeMedico {
+            font-size: 0.85rem;
             color: #555;
-            font-weight: 600;
         }
-        td { 
-            padding: 12px 12px; 
-            border-bottom: 1px solid #f0f0f0; 
-            font-size: 0.88rem; 
-        }
-        .badge {
-            display: inline-block; 
-            padding: 4px 10px;
-            border-radius: 12px; 
-            font-size: 0.75rem; 
-            font-weight: 600;
-        }
-        .badge.controlado { background: #d5f5e3; color: #27ae60; }
-        .badge.parcial { background: #fef9e7; color: #e67e22; }
-        .badge.nao { background: #fdecea; color: #e74c3c; }
-        .badge.novo { background: #fdecea; color: #e74c3c; }
-        .badge.visto { background: #fef9e7; color: #e67e22; }
-        .badge.seguimento { background: #e8f4fd; color: #2980b9; }
-        .badge.fechado { background: #f0f0f0; color: #888; }
-        .btn {
-            padding: 8px 14px; 
-            border: none; 
-            border-radius: 6px;
-            cursor: pointer; 
-            font-size: 0.82rem; 
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        .btn-verde { 
-            background: #d5f5e3; 
-            color: #27ae60;
-        }
-        .btn-azul { 
-            background: #FF6B35; 
-            color: white;
-            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
-        }
-        .btn-azul:hover {
-            background: #D84315;
-            box-shadow: 0 6px 16px rgba(255, 107, 53, 0.3);
-        }
-        .alerta-row.critica td { background: #fff5f5; }
-        .alerta-row.alta td { background: #fffbf0; }
-        select {
-            padding: 6px 8px; 
-            border: 2px solid #e0e0e0; 
-            border-radius: 4px; 
+        .btn-sair {
+            padding: 7px 16px;
+            background: #f5f4f2;
+            border: 1px solid #e0ddd8;
+            border-radius: 7px;
             font-size: 0.82rem;
-            transition: all 0.3s;
+            font-weight: 600;
+            color: #444;
             cursor: pointer;
+            transition: background 0.15s;
         }
-        select:focus {
+        .btn-sair:hover { background: #ece9e4; }
+
+        .container { max-width: 1140px; margin: 32px auto; padding: 0 24px; }
+
+        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+        .section {
+            background: #fff;
+            border-radius: 12px;
+            border: 0.5px solid #e8e5e0;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid #f0ede8;
+        }
+        .section-icon {
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+        .icon-orange { background: #fef0ea; color: #e84a12; }
+        .icon-gray { background: #f5f4f2; color: #555; }
+        .icon-green { background: #eaf5ef; color: #27a058; }
+        .icon-blue { background: #eaf2fb; color: #2563c4; }
+        .section h2 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th {
+            text-align: left;
+            padding: 9px 12px;
+            background: #fafaf9;
+            font-size: 0.75rem;
+            color: #888;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            border-bottom: 1px solid #f0ede8;
+        }
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f8f6f3;
+            font-size: 0.87rem;
+            color: #333;
+        }
+        tr:last-child td { border-bottom: none; }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 9px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+        .badge-critica { background: #fdecea; color: #c0392b; }
+        .badge-alta { background: #fff4e6; color: #b85c00; }
+        .badge-media { background: #eaf2fb; color: #1a5eb8; }
+        .badge-baixa { background: #f0f0f0; color: #666; }
+        .badge-novo { background: #fdecea; color: #c0392b; }
+        .badge-visto { background: #fff4e6; color: #b85c00; }
+        .badge-seguimento { background: #eaf2fb; color: #1a5eb8; }
+        .badge-fechado { background: #f0f0f0; color: #666; }
+        .badge-controlado { background: #eaf5ef; color: #1e7d42; }
+        .badge-parcial { background: #fff4e6; color: #b85c00; }
+        .badge-nao { background: #fdecea; color: #c0392b; }
+
+        .row-critica td { background: #fffafa; }
+        .row-alta td { background: #fffdf8; }
+
+        select {
+            padding: 5px 10px;
+            border: 1px solid #e0ddd8;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: #333;
+            background: #fff;
+            cursor: pointer;
             outline: none;
-            border-color: #FF6B35;
-            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+        select:focus { border-color: #e84a12; }
+
+        .btn-ficha {
+            padding: 6px 14px;
+            background: #f5f4f2;
+            border: 1px solid #e0ddd8;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #444;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-ficha:hover { background: #e84a12; color: #fff; border-color: #e84a12; }
+
+        .motivo-text {
+            font-size: 0.78rem;
+            color: #888;
+            max-width: 180px;
+            line-height: 1.4;
+        }
+
+        .detalhe-section {
+            background: #fff;
+            border-radius: 12px;
+            border: 0.5px solid #e8e5e0;
+            padding: 28px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .detalhe-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid #f0ede8;
+        }
+        .sub-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 20px 0 10px;
+        }
+        .sub-title:first-child { margin-top: 0; }
+
+        .alerta-card {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 3px solid;
+        }
+        .alerta-card.critica { background: #fffafa; border-color: #e74c3c; }
+        .alerta-card.alta { background: #fffdf5; border-color: #f39c12; }
+        .alerta-card.media { background: #f0f7ff; border-color: #3498db; }
+        .alerta-card.baixa { background: #fafafa; border-color: #ccc; }
+        .alerta-card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        .alerta-tipo { font-size: 0.82rem; font-weight: 700; color: #333; }
+        .alerta-data { font-size: 0.75rem; color: #aaa; }
+        .alerta-motivo { font-size: 0.85rem; color: #555; line-height: 1.4; }
+
+        .nota-card {
+            padding: 12px 16px;
+            background: #fafaf9;
+            border-radius: 8px;
+            border-left: 3px solid #e84a12;
+            margin-bottom: 8px;
+        }
+        .nota-meta { font-size: 0.75rem; color: #aaa; margin-bottom: 4px; }
+        .nota-texto { font-size: 0.88rem; color: #333; line-height: 1.5; }
+
+        .notas-section {
+            background: #fff;
+            border-radius: 12px;
+            border: 0.5px solid #e8e5e0;
+            padding: 24px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #e0ddd8;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 80px;
+            resize: vertical;
+            outline: none;
+            color: #1a1a1a;
+            background: #fafaf9;
+            margin-top: 12px;
+            transition: border-color 0.15s;
+        }
+        textarea:focus { border-color: #e84a12; background: #fff; }
+        .btn-guardar {
+            margin-top: 10px;
+            padding: 10px 24px;
+            background: #e84a12;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .btn-guardar:hover { background: #c73e0e; }
+
+        .empty-state {
+            padding: 20px 0;
+            text-align: center;
+            color: #bbb;
+            font-size: 0.88rem;
         }
     </style>
 </head>
 <body>
     <nav>
-        <h1>🩺 PIAC — Área do Médico</h1>
-        <span id="nomeMedico"></span>
-        <button onclick="sair()">Sair</button>
+        <div class="nav-logo">
+            <div class="nav-logo-icon">
+                <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14 4C9 4 6 8 6 12c0 5 4 9 8 11 4-2 8-6 8-11 0-4-3-8-8-8z" stroke="white" stroke-width="1.8" fill="none"/>
+                    <path d="M14 8v8M10 12h8" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <span>PIAC <small>— Área do Médico</small></span>
+        </div>
+        <div class="nav-right">
+            <span id="nomeMedico"></span>
+            <button class="btn-sair" onclick="sair()">Sair</button>
+        </div>
     </nav>
 
     <div class="container">
         <div class="grid2">
-            <!-- Alertas -->
             <div class="section">
-                <h2>🔔 Alertas Pendentes</h2>
-                <div id="alertasContainer"><p style="color:#999">A carregar...</p></div>
+                <div class="section-header">
+                    <div class="section-icon icon-orange">🔔</div>
+                    <h2>Alertas Pendentes</h2>
+                </div>
+                <div id="alertasContainer"><p class="empty-state">A carregar...</p></div>
             </div>
 
-            <!-- Utentes -->
             <div class="section">
-                <h2>👥 Os Meus Utentes</h2>
-                <div id="utentesContainer"><p style="color:#999">A carregar...</p></div>
+                <div class="section-header">
+                    <div class="section-icon icon-gray">👥</div>
+                    <h2>Os Meus Utentes</h2>
+                </div>
+                <div id="utentesContainer"><p class="empty-state">A carregar...</p></div>
             </div>
         </div>
 
-        <!-- Detalhe do utente selecionado -->
-        <div class="section" id="detalheUtente" style="display:none">
-            <h2 id="tituloDetalhe">Ficha Clínica</h2>
+        <div class="detalhe-section" id="detalheUtente">
+            <div class="detalhe-title" id="tituloDetalhe">Ficha Clínica</div>
             <div id="conteudoDetalhe"></div>
         </div>
-    </div>
 
-
-        <!-- Notas Clínicas -->
-<div class="section" id="secaoNotas" style="display:none;">
-    <h2>📝 Notas Clínicas</h2>
-    <div id="notasContainer"><p style="color:#999">Selecione um utente para ver as notas.</p></div>
-    <div style="margin-top:16px;">
-        <textarea id="novaNotaTexto" placeholder="Escrever nova nota clínica..."
-            style="width:100%; padding:12px; border:2px solid #e0e0e0; border-radius:8px;
-            font-size:0.9rem; min-height:80px; resize:vertical; transition: all 0.3s; font-family: 'Segoe UI', sans-serif;"></textarea>
-        <button onclick="guardarNota()"
-            style="margin-top:8px; background:#FF6B35; color:white; border:none;
-            padding:10px 24px; border-radius:8px; cursor:pointer; font-weight:600; transition: all 0.3s; box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);">
-            Guardar Nota
-        </button>
+        <div class="notas-section" id="secaoNotas">
+            <div class="section-header">
+                <div class="section-icon icon-blue">📝</div>
+                <h2>Notas Clínicas</h2>
+            </div>
+            <div id="notasContainer"><p class="empty-state">Selecione um utente para ver as notas.</p></div>
+            <textarea id="novaNotaTexto" placeholder="Escrever nova nota clínica..."></textarea>
+            <button class="btn-guardar" onclick="guardarNota()">Guardar Nota</button>
+        </div>
     </div>
-</div>
 
     <script>
         const token = localStorage.getItem('token');
         const utilizador = JSON.parse(localStorage.getItem('utilizador') || '{}');
-
         if (!token || utilizador.perfil !== 'medico') window.location.href = '/';
-
         document.getElementById('nomeMedico').textContent = `Dr(a). ${utilizador.nome}`;
 
+        let utenteAtualId = null;
+        let medicoId = localStorage.getItem('perfilId');
 
         async function carregarAlertas() {
-            if (!medicoId) { document.getElementById('alertasContainer').innerHTML = '<p style="color:#999">ID do médico não encontrado.</p>'; return; }
-
-            const res = await fetch(`/medicos/${medicoId}/alertas`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
+            if (!medicoId) { document.getElementById('alertasContainer').innerHTML = '<p class="empty-state">ID do médico não encontrado.</p>'; return; }
+            const res = await fetch(`/medicos/${medicoId}/alertas`, { headers: { 'Authorization': `Bearer ${token}` } });
             const alertas = await res.json();
-
             if (alertas.length === 0) {
-                document.getElementById('alertasContainer').innerHTML = '<p style="color:#27ae60">✅ Sem alertas pendentes.</p>';
+                document.getElementById('alertasContainer').innerHTML = '<p class="empty-state" style="color:#27a058">Sem alertas pendentes.</p>';
                 return;
             }
-
             document.getElementById('alertasContainer').innerHTML = `
                 <table>
-                    <thead><tr><th>Utente</th><th>Tipo</th><th>Prioridade</th><th>Estado</th><th>Ação</th></tr></thead>
+                    <thead><tr><th>Utente</th><th>Tipo</th><th>Prioridade</th><th>Estado</th><th>Motivo</th></tr></thead>
                     <tbody>
                         ${alertas.map(a => `
-                            <tr class="alerta-row ${a.prioridade}">
-                                <td>${a.utente?.utilizador?.nome || '—'}</td>
-                                <td style="font-size:0.8rem">${a.tipo.replace('_',' ')}</td>
-                                <td><span class="badge ${a.prioridade}">${a.prioridade.toUpperCase()}</span></td>
+                            <tr class="row-${a.prioridade}">
+                                <td style="font-weight:600">${a.utente?.utilizador?.nome || '—'}</td>
+                                <td style="font-size:0.8rem;color:#555">${a.tipo.replace('_',' ')}</td>
+                                <td><span class="badge badge-${a.prioridade}">${a.prioridade.toUpperCase()}</span></td>
                                 <td>
                                     <select onchange="atualizarAlerta(${a.id}, this.value)">
                                         <option ${a.estado==='NOVO'?'selected':''}>NOVO</option>
@@ -208,7 +362,7 @@
                                         <option ${a.estado==='FECHADO'?'selected':''}>FECHADO</option>
                                     </select>
                                 </td>
-                                <td style="font-size:0.78rem;color:#666;max-width:200px">${a.motivo.substring(0,80)}...</td>
+                                <td class="motivo-text">${a.motivo.substring(0,80)}...</td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -224,24 +378,17 @@
         }
 
         async function carregarUtentes() {
-            const res = await fetch('/utentes', {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
+            const res = await fetch('/utentes', { headers: { 'Authorization': `Bearer ${token}` } });
             const utentes = await res.json();
-
             document.getElementById('utentesContainer').innerHTML = `
                 <table>
                     <thead><tr><th>Nome</th><th>NIF</th><th>Ação</th></tr></thead>
                     <tbody>
                         ${utentes.map(u => `
                             <tr>
-                                <td>${u.utilizador?.nome || '—'}</td>
-                                <td>${u.nif}</td>
-                                <td>
-                                    <button class="btn btn-azul" onclick="verFichaUtente(${u.id}, '${u.utilizador?.nome}')">
-                                        Ver Ficha
-                                    </button>
-                                </td>
+                                <td style="font-weight:600">${u.utilizador?.nome || '—'}</td>
+                                <td style="color:#888;font-size:0.82rem">${u.nif}</td>
+                                <td><button class="btn-ficha" onclick="verFichaUtente(${u.id}, '${u.utilizador?.nome}')">Ver Ficha</button></td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -252,23 +399,20 @@
             const detalhe = document.getElementById('detalheUtente');
             const titulo = document.getElementById('tituloDetalhe');
             const conteudo = document.getElementById('conteudoDetalhe');
-
-            titulo.textContent = `📋 Ficha Clínica — ${nome}`;
-            conteudo.innerHTML = '<p style="color:#999">A carregar...</p>';
+            titulo.textContent = `Ficha Clínica — ${nome}`;
+            conteudo.innerHTML = '<p class="empty-state">A carregar...</p>';
             detalhe.style.display = 'block';
             detalhe.scrollIntoView({ behavior: 'smooth' });
 
-            // Buscar histórico CARAT e alertas do utente
             const [resCARAT, resAlertas] = await Promise.all([
                 fetch(`/utentes/${utenteId}/carat`, { headers: { 'Authorization': `Bearer ${token}` } }),
                 fetch(`/utentes/${utenteId}/alertas`, { headers: { 'Authorization': `Bearer ${token}` } })
             ]);
-
             const avaliacoes = await resCARAT.json();
             const alertas = await resAlertas.json();
 
             const tabelaCARAT = avaliacoes.length === 0
-                ? '<p style="color:#999;padding:12px">Sem avaliações CARAT.</p>'
+                ? '<p class="empty-state">Sem avaliações CARAT.</p>'
                 : `<table>
                     <thead><tr><th>Data</th><th>Score</th><th>Interpretação</th><th>Recomendação</th></tr></thead>
                     <tbody>
@@ -278,81 +422,68 @@
                             return `<tr>
                                 <td>${new Date(a.data).toLocaleDateString('pt-PT')}</td>
                                 <td><strong>${a.scoreTotal}/30</strong></td>
-                                <td><span class="badge ${cls}">${a.interpretacao}</span></td>
-                                <td style="font-size:0.82rem">${a.textoRecomendacao || '—'}</td>
+                                <td><span class="badge badge-${cls}">${a.interpretacao}</span></td>
+                                <td style="font-size:0.82rem;color:#555">${a.textoRecomendacao || '—'}</td>
                             </tr>`;
                         }).join('')}
                     </tbody>
                 </table>`;
 
-            conteudo.innerHTML = `
-                <h3 style="margin-bottom:12px;color:#FF6B35;font-weight:600">Histórico CARAT</h3>
-                ${tabelaCARAT}
-                <h3 style="margin:20px 0 12px;color:#FF6B35;font-weight:600">Alertas</h3>
-                ${alertas.length === 0
-                    ? '<p style="color:#27ae60;padding:12px">Sem alertas para este utente.</p>'
-                    : alertas.map(a => `
-                        <div style="padding:12px 14px;margin-bottom:10px;border-radius:6px;background:#f8f9fa;border-left:4px solid ${a.prioridade==='critica'?'#e74c3c':a.prioridade==='alta'?'#f39c12':'#3498db'}">
-                            <strong>${a.tipo.replace('_',' ').toUpperCase()}</strong>
-                            <span style="font-size:0.8rem;color:#888;margin-left:8px">${new Date(a.data).toLocaleDateString('pt-PT')}</span>
-                            <span class="badge ${a.estado.toLowerCase()}" style="margin-left:8px">${a.estado}</span>
-                            <p style="margin-top:4px;font-size:0.85rem">${a.motivo}</p>
-                        </div>`).join('')
-                }`;
+            const alertasHTML = alertas.length === 0
+                ? '<p class="empty-state" style="color:#27a058">Sem alertas para este utente.</p>'
+                : alertas.map(a => `
+                    <div class="alerta-card ${a.prioridade}">
+                        <div class="alerta-card-header">
+                            <span class="alerta-tipo">${a.tipo.replace('_',' ').toUpperCase()}</span>
+                            <span class="alerta-data">${new Date(a.data).toLocaleDateString('pt-PT')}</span>
+                            <span class="badge badge-${a.estado.toLowerCase().replace('_seguimento','seguimento')}">${a.estado}</span>
+                        </div>
+                        <p class="alerta-motivo">${a.motivo}</p>
+                    </div>`).join('');
 
-                await carregarNotas(utenteId);
+            conteudo.innerHTML = `
+                <div class="sub-title">Histórico CARAT</div>
+                ${tabelaCARAT}
+                <div class="sub-title">Alertas</div>
+                ${alertasHTML}`;
+
+            await carregarNotas(utenteId);
         }
 
+        async function carregarNotas(utenteId) {
+            utenteAtualId = utenteId;
+            document.getElementById('secaoNotas').style.display = 'block';
+            const res = await fetch(`/utentes/${utenteId}/notas`, { headers: { 'Authorization': `Bearer ${token}` } });
+            const notas = await res.json();
+            const cont = document.getElementById('notasContainer');
+            if (notas.length === 0) {
+                cont.innerHTML = '<p class="empty-state">Sem notas clínicas para este utente.</p>';
+                return;
+            }
+            cont.innerHTML = notas.map(n => `
+                <div class="nota-card">
+                    <div class="nota-meta">${new Date(n.dataNota).toLocaleDateString('pt-PT')} — Dr(a). ${n.medico?.utilizador?.nome || 'Médico'}</div>
+                    <div class="nota-texto">${n.descricao}</div>
+                </div>
+            `).join('');
+        }
 
-
-        let utenteAtualId = null;
-let medicoId = localStorage.getItem('perfilId');
-
-async function carregarNotas(utenteId) {
-    utenteAtualId = utenteId;
-    document.getElementById('secaoNotas').style.display = 'block';
-    const res = await fetch(`/utentes/${utenteId}/notas`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-    });
-    const notas = await res.json();
-    const cont = document.getElementById('notasContainer');
-    if (notas.length === 0) {
-        cont.innerHTML = '<p style="color:#999">Sem notas clínicas para este utente.</p>';
-        return;
-    }
-    cont.innerHTML = notas.map(n => `
-        <div style="border-left:4px solid #FF6B35; padding:12px 14px;
-             margin-bottom:10px; background:#f8f9fa; border-radius:0 6px 6px 0;">
-            <div style="font-size:0.8rem; color:#888; margin-bottom:6px; font-weight:600;">
-                ${new Date(n.dataNota).toLocaleDateString('pt-PT')} — Dr(a). ${n.medico?.utilizador?.nome || 'Médico'}
-            </div>
-            <div style="font-size:0.92rem; line-height: 1.5;">${n.descricao}</div>
-        </div>
-    `).join('');
-    
-}
-
-async function guardarNota() {
-    const descricao = document.getElementById('novaNotaTexto').value.trim();
-    if (!descricao) { alert('Escreva uma nota antes de guardar.'); return; }
-    if (!utenteAtualId) { alert('Selecione um utente primeiro.'); return; }
-
-    const res = await fetch(`/medicos/${medicoId}/utentes/${utenteAtualId}/notas`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ descricao })
-    });
-    if (res.ok) {
-        document.getElementById('novaNotaTexto').value = '';
-        await carregarNotas(utenteAtualId);
-    } else {
-        alert('Erro ao guardar nota.');
-    }
-}
-
+        async function guardarNota() {
+            const descricao = document.getElementById('novaNotaTexto').value.trim();
+            if (!descricao) { alert('Escreva uma nota antes de guardar.'); return; }
+            if (!utenteAtualId) { alert('Selecione um utente primeiro.'); return; }
+            const res = await fetch(`/medicos/${medicoId}/utentes/${utenteAtualId}/notas`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ descricao })
+            });
+            if (res.ok) {
+                document.getElementById('novaNotaTexto').value = '';
+                await carregarNotas(utenteAtualId);
+            } else {
+                alert('Erro ao guardar nota.');
+            }
+        }
 
         function sair() { localStorage.clear(); window.location.href = '/'; }
 
