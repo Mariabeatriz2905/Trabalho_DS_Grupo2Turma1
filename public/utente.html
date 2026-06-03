@@ -231,14 +231,45 @@
 
         <div class="lembrete" id="lembreteAvaliacao"></div>
 
+    
+<div class="section">
+    <div class="section-header">
+        <div class="section-icon icon-blue">⚠️</div>
+        <h2>Reportar Sintoma Rápido</h2>
+    </div>
+    <div style="display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap;">
+        <div style="flex: 2; min-width: 200px;">
+            <label style="font-size: 0.8rem; font-weight: 600; color: #666; display: block; margin-bottom: 6px; text-transform: uppercase;">Qual o sintoma?</label>
+            <select id="sintomaSelect" style="width: 100%; padding: 10px; border: 1px solid #e0ddd8; border-radius: 8px; font-size: 0.9rem; outline: none; background: #fff;">
+                <option value="Falta de ar ao esforço">Falta de ar ao esforço</option>
+                <option value="Pieira noturna frequente">Pieira noturna frequente</option>
+                <option value="Tosse seca persistente">Tosse seca persistente</option>
+                <option value="Espirros matinais intensos">Espirros matinais intensos</option>
+                <option value="Aperto no peito ao acordar">Aperto no peito ao acordar</option>
+            </select>
+        </div>
+        <div style="flex: 1; min-width: 120px;">
+            <label style="font-size: 0.8rem; font-weight: 600; color: #666; display: block; margin-bottom: 6px; text-transform: uppercase;">Intensidade</label>
+            <select id="intensidadeSelect" style="width: 100%; padding: 10px; border: 1px solid #e0ddd8; border-radius: 8px; font-size: 0.9rem; outline: none; background: #fff;">
+                <option value="1">Nível 1 (Ligeiro)</option>
+                <option value="2">Nível 2</option>
+                <option value="3">Nível 3 (Moderado)</option>
+                <option value="4">Nível 4</option>
+                <option value="5">Nível 5 (Crítico)</option>
+            </select>
+        </div>
+        <button class="btn-submit" onclick="registarSintomaDiario()" style="margin-top: 0; width: auto; padding: 11px 24px; white-space: nowrap;">Gravar Sintoma</button>
+    </div>
+</div>
+
         <div class="section">
             <div class="section-header">
                 <div class="section-icon icon-orange">📋</div>
                 <h2>Questionário CARAT — Nova Avaliação</h2>
             </div>
             <div class="intro-carat">
-                Responda às 10 perguntas sobre os seus sintomas respiratórios na última semana.<br>
-                <strong>1 = Nunca &nbsp;|&nbsp; 2 = Às vezes &nbsp;|&nbsp; 3 = Sempre</strong>
+              Nas últimas 4 semanas, por causa da sua asma/rinite/alergia, em média, quantas vezes teve:<br>
+              <strong>* Todas as questões são de resposta obrigatória</strong>
             </div>
             <div id="perguntasContainer"></div>
             <button class="btn-submit" onclick="submeterCarat()">Calcular e Guardar Avaliação</button>
@@ -269,34 +300,56 @@
         </div>
     </div>
 
-    <script>
+   <script>
+        
         const perguntas = [
-            "Nas últimas semanas, teve rinite (corrimento nasal, comichão ou congestão nasal)?",
-            "Nas últimas semanas, os sintomas nasais perturbaram o seu sono?",
-            "Nas últimas semanas, os sintomas nasais perturbaram as suas atividades diárias?",
-            "Nas últimas semanas, teve sintomas de asma (pieira, falta de ar, aperto no peito)?",
-            "Nas últimas semanas, acordou durante a noite por causa da asma?",
-            "Nas últimas semanas, a asma perturbou as suas atividades diárias?",
-            "Nas últimas semanas, precisou de usar medicação de alívio (broncodilatador)?",
-            "No geral, como avalia o controlo da sua asma nas últimas semanas?",
-            "Como avalia o controlo da sua rinite nas últimas semanas?",
-            "Globalmente, como avalia o controlo das suas doenças respiratórias?"
+            "Nariz entupido?",
+            "Espirros?",
+            "Comichão no nariz?",
+            "Corrimento/pingo do nariz?",
+            "Falta de ar/dispneia?",
+            "Chiadeira no peito/pieira?",
+            "Aperto no peito com esforço físico?",
+            "Cansaço/dificuldade em fazer as suas actividades ou tarefas do dia-a-dia?",
+            "Acordou durante a noite por causa da sua asma/rinite/alergia?",
+            "Aumentar a utilização dos seus medicamentos?"
         ];
 
+      
         const token = localStorage.getItem('token');
         const utilizador = JSON.parse(localStorage.getItem('utilizador') || '{}');
         if (!token || utilizador.perfil !== 'utente') window.location.href = '/';
         document.getElementById('nomeUtente').textContent = `Olá, ${utilizador.nome}`;
 
         const container = document.getElementById('perguntasContainer');
+        
+       
         perguntas.forEach((p, i) => {
+            let htmlOpcoes = '';
+
+            if (i < 9) {
+                // Perguntas 1 a 9
+                htmlOpcoes = `
+                    <label><input type="radio" name="q${i}" value="4"><span style="display:block;padding:6px 0">Nunca</span></label>
+                    <label><input type="radio" name="q${i}" value="3"><span style="display:block;padding:6px 0">Até 1 ou 2 dias</span></label>
+                    <label><input type="radio" name="q${i}" value="2"><span style="display:block;padding:6px 0">Mais de 2 dias/semana</span></label>
+                    <label><input type="radio" name="q${i}" value="1"><span style="display:block;padding:6px 0">Quase todos os dias</span></label>
+                `;
+            } else {
+                // Pergunta 10 (Caso especial com textos diferentes)
+                htmlOpcoes = `
+                    <label><input type="radio" name="q${i}" value="4"><span style="display:block;padding:6px 0">Não estou a tomar med.</span></label>
+                    <label><input type="radio" name="q${i}" value="4"><span style="display:block;padding:6px 0">Nunca</span></label>
+                    <label><input type="radio" name="q${i}" value="3"><span style="display:block;padding:6px 0">Menos de 7 dias</span></label>
+                    <label><input type="radio" name="q${i}" value="1"><span style="display:block;padding:6px 0">7 ou mais dias</span></label>
+                `;
+            }
+
             container.innerHTML += `
                 <div class="pergunta">
-                    <p>${i + 1}. ${p}</p>
-                    <div class="opcoes">
-                        <label><input type="radio" name="q${i}" value="1"><span style="display:block;padding:6px 0">1 — Nunca</span></label>
-                        <label><input type="radio" name="q${i}" value="2"><span style="display:block;padding:6px 0">2 — Às vezes</span></label>
-                        <label><input type="radio" name="q${i}" value="3"><span style="display:block;padding:6px 0">3 — Sempre</span></label>
+                    <p>${i + 1}. ${p} <span style="color:red">*</span></p>
+                    <div class="opcoes" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+                        ${htmlOpcoes}
                     </div>
                 </div>`;
         });
@@ -340,6 +393,8 @@
                 document.getElementById('ultimaData').textContent = new Date(ultima.data).toLocaleDateString('pt-PT');
                 document.getElementById('estadoControlo').textContent = ultima.interpretacao;
                 const card = document.getElementById('cardScore');
+                
+                card.classList.remove('verde', 'amarelo', 'vermelho');
                 if (ultima.scoreTotal >= 24) card.classList.add('verde');
                 else if (ultima.scoreTotal >= 16) card.classList.add('amarelo');
                 else card.classList.add('vermelho');
@@ -355,7 +410,7 @@
                             a.interpretacao === 'Parcialmente Controlado' ? 'parcial' : 'nao-controlado';
                 return `<tr>
                     <td>${new Date(a.data).toLocaleDateString('pt-PT')}</td>
-                    <td><strong>${a.scoreTotal}</strong> / 30</td>
+                    <td><strong>${a.scoreTotal}</strong> / 40</td>
                     <td><span class="badge badge-${cls}">${a.interpretacao}</span></td>
                     <td style="font-size:0.82rem;color:#666">${a.textoRecomendacao || '—'}</td>
                 </tr>`;
@@ -410,13 +465,47 @@
                 const cls = dados.scoreTotal >= 24 ? 'controlado' : dados.scoreTotal >= 16 ? 'parcial' : 'nao-controlado';
                 resultDiv.className = `resultado ${cls}`;
                 resultDiv.innerHTML = `
-                    <strong>Score Total: ${dados.scoreTotal} / 30</strong><br>
+                    <strong>Score Total: ${dados.scoreTotal} / 40</strong><br>
                     <strong>Interpretação: ${dados.interpretacao}</strong><br><br>
                     ${dados.textoRecomendacao}`;
                 await carregarHistorico();
                 await carregarAlertas();
             } catch (err) { alert('Erro ao submeter avaliação.'); }
         }
+
+async function registarSintomaDiario() {
+    const descricao = document.getElementById('sintomaSelect').value;
+    const intensidade = Number(document.getElementById('intensidadeSelect').value);
+    const idUtente = localStorage.getItem('perfilId');
+    
+    if (!idUtente) { alert('Erro: ID do utente não encontrado.'); return; }
+
+    try {
+        const res = await fetch(`/utentes/${idUtente}/sintomas`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json', 
+                'Authorization': `Bearer ${token}` 
+            },
+            body: JSON.stringify({
+                descricao: descricao,
+                intensidade: intensidade,
+                dataAparecimento: new Date().toISOString().split('T')[0] // Envia a data de hoje (AAAA-MM-DD)
+            })
+        });
+
+        if (res.ok) {
+            alert('Sintoma clínico registado com sucesso! O seu médico já o consegue visualizar.');
+            // Opcional: podes recarregar dados ou limpar campos se necessário
+        } else {
+            const dadosErro = await res.json();
+            alert(`Erro ao registar sintoma: ${dadosErro.erro || 'Verifique o endpoint backend.'}`);
+        }
+    } catch (err) {
+        console.error("Erro no fetch do sintoma:", err);
+        alert('Não foi possível ligar ao servidor para registar o sintoma.');
+    }
+}
 
         function sair() { localStorage.clear(); window.location.href = '/'; }
         carregarDados();
