@@ -28,7 +28,16 @@
             border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
         }
-        .nav-logo-icon svg { width: 18px; height: 18px; }
+
+        .brand-mark {
+            width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: inherit;
+            object-fit: cover;
+            object-position: center 42%;
+            filter: saturate(1.08) contrast(1.05);
+        }
         .nav-logo span {
             font-size: 1rem;
             font-weight: 700;
@@ -65,15 +74,18 @@
 
         .container { max-width: 1140px; margin: 32px auto; padding: 0 24px; }
 
-        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid2 { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr); gap: 20px; align-items: start; }
 
         .section {
             background: #fff;
-            border-radius: 12px;
+            border-radius: 14px;
             border: 0.5px solid #e8e5e0;
             padding: 24px;
             margin-bottom: 20px;
+            box-shadow: 0 10px 28px rgba(55, 41, 31, 0.045);
         }
+        .section-alertas { border-top: 4px solid #e84a12; }
+        .section-utentes { border-top: 4px solid #8f8176; }
         .section-header {
             display: flex;
             align-items: center;
@@ -167,12 +179,42 @@
         }
         .btn-ficha:hover { background: #e84a12; color: #fff; border-color: #e84a12; }
 
-        .motivo-text {
-            font-size: 0.78rem;
-            color: #888;
-            max-width: 180px;
-            line-height: 1.4;
+        .alerta-lista { display: grid; gap: 12px; }
+        .alerta-resumo {
+            border: 1px solid #eee5dd;
+            border-left-width: 5px;
+            border-radius: 12px;
+            background: #fff;
+            padding: 14px 16px;
+            box-shadow: 0 8px 20px rgba(55, 41, 31, 0.05);
         }
+        .alerta-resumo.critica { border-left-color: #c0392b; background: #fffafa; }
+        .alerta-resumo.alta { border-left-color: #f39c12; background: #fffdf8; }
+        .alerta-resumo.media { border-left-color: #3498db; background: #f7fbff; }
+        .alerta-resumo.baixa { border-left-color: #b8b2aa; background: #fafafa; }
+        .alerta-topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        .alerta-utente { font-weight: 700; color: #1f1f1f; font-size: 0.92rem; }
+        .alerta-tipo-label { display: block; margin-top: 3px; color: #777; font-size: 0.78rem; }
+        .alerta-badges { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+        .alerta-motivo-box {
+            background: rgba(255,255,255,0.72);
+            border: 1px solid #f0ede8;
+            border-radius: 10px;
+            padding: 11px 12px;
+            color: #444;
+            font-size: 0.88rem;
+            line-height: 1.55;
+            white-space: normal;
+            overflow-wrap: anywhere;
+        }
+        .alerta-estado-linha { margin-top: 10px; display: flex; align-items: center; gap: 8px; color: #777; font-size: 0.78rem; }
+        .alerta-estado-linha select { min-width: 150px; }
 
         .detalhe-section {
             background: #fff;
@@ -280,10 +322,7 @@
     <nav>
         <div class="nav-logo">
             <div class="nav-logo-icon">
-                <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M14 4C9 4 6 8 6 12c0 5 4 9 8 11 4-2 8-6 8-11 0-4-3-8-8-8z" stroke="white" stroke-width="1.8" fill="none"/>
-                    <path d="M14 8v8M10 12h8" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
-                </svg>
+                <img class="brand-mark" src="/assets/piac-icon.png" alt="PIAC">
             </div>
             <span>PIAC <small>— Área do Médico</small></span>
         </div>
@@ -295,17 +334,17 @@
 
     <div class="container">
         <div class="grid2">
-            <div class="section">
+            <div class="section section-alertas">
                 <div class="section-header">
-                    <div class="section-icon icon-orange">🔔</div>
+                    <div class="section-icon icon-orange">!</div>
                     <h2>Alertas Pendentes</h2>
                 </div>
                 <div id="alertasContainer"><p class="empty-state">A carregar...</p></div>
             </div>
 
-            <div class="section">
+            <div class="section section-utentes">
                 <div class="section-header">
-                    <div class="section-icon icon-gray">👥</div>
+                    <div class="section-icon icon-gray">U</div>
                     <h2>Os Meus Utentes</h2>
                 </div>
                 <div id="utentesContainer"><p class="empty-state">A carregar...</p></div>
@@ -319,7 +358,7 @@
 
         <div class="notas-section" id="secaoNotas">
             <div class="section-header">
-                <div class="section-icon icon-blue">📝</div>
+                <div class="section-icon icon-blue">N</div>
                 <h2>Notas Clínicas</h2>
             </div>
             <div id="notasContainer"><p class="empty-state">Selecione um utente para ver as notas.</p></div>
@@ -356,6 +395,44 @@
             }
         }
 
+        function normalizarTexto(valor) {
+            return (valor || '—')
+                .toString()
+                .replace(/_/g, ' ')
+                .replace(/(^|\s)\S/g, letra => letra.toUpperCase());
+        }
+
+        function tipoVisivel(tipo) {
+            const tipos = {
+                score_baixo: 'Score baixo',
+                deterioracao: 'Deterioração',
+                sintomas_persistentes: 'Sintomas persistentes',
+                medicacao: 'Medicação',
+                exame: 'Exame'
+            };
+            return tipos[tipo] || normalizarTexto(tipo);
+        }
+
+        function prioridadeVisivel(prioridade) {
+            const prioridades = {
+                critica: 'Crítica',
+                alta: 'Alta',
+                media: 'Média',
+                baixa: 'Baixa'
+            };
+            return prioridades[prioridade] || normalizarTexto(prioridade);
+        }
+
+        function estadoVisivel(estado) {
+            const estados = {
+                NOVO: 'Novo',
+                VISTO: 'Visto',
+                EM_SEGUIMENTO: 'Em seguimento',
+                FECHADO: 'Fechado'
+            };
+            return estados[estado] || normalizarTexto(estado);
+        }
+
         async function carregarAlertas() {
             if (!medicoId) { document.getElementById('alertasContainer').innerHTML = '<p class="empty-state">ID do médico não encontrado.</p>'; return; }
             const res = await fetch(`/medicos/${medicoId}/alertas`, { headers: { 'Authorization': `Bearer ${token}` } });
@@ -365,27 +442,32 @@
                 return;
             }
             document.getElementById('alertasContainer').innerHTML = `
-                <table>
-                    <thead><tr><th>Utente</th><th>Tipo</th><th>Prioridade</th><th>Estado</th><th>Motivo</th></tr></thead>
-                    <tbody>
-                        ${alertas.map(a => `
-                            <tr class="row-${a.prioridade}">
-                                <td style="font-weight:600">${a.utente?.utilizador?.nome || '—'}</td>
-                                <td style="font-size:0.8rem;color:#555">${a.tipo.replace('_',' ')}</td>
-                                <td><span class="badge badge-${a.prioridade}">${a.prioridade.toUpperCase()}</span></td>
-                                <td>
-                                    <select onchange="atualizarAlerta(${a.id}, this.value)">
-                                        <option ${a.estado==='NOVO'?'selected':''}>NOVO</option>
-                                        <option ${a.estado==='VISTO'?'selected':''}>VISTO</option>
-                                        <option ${a.estado==='EM_SEGUIMENTO'?'selected':''}>EM_SEGUIMENTO</option>
-                                        <option ${a.estado==='FECHADO'?'selected':''}>FECHADO</option>
-                                    </select>
-                                </td>
-                                <td class="motivo-text">${a.motivo.substring(0,80)}...</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>`;
+                <div class="alerta-lista">
+                    ${alertas.map(a => `
+                        <article class="alerta-resumo ${a.prioridade || 'baixa'}">
+                            <div class="alerta-topo">
+                                <div>
+                                    <div class="alerta-utente">${a.utente?.utilizador?.nome || 'Utente sem nome'}</div>
+                                    <span class="alerta-tipo-label">${tipoVisivel(a.tipo)}</span>
+                                </div>
+                                <div class="alerta-badges">
+                                    <span class="badge badge-${a.prioridade}">${prioridadeVisivel(a.prioridade)}</span>
+                                    <span class="badge badge-${a.estado ? a.estado.toLowerCase().replace('_seguimento','seguimento') : 'novo'}">${estadoVisivel(a.estado)}</span>
+                                </div>
+                            </div>
+                            <div class="alerta-motivo-box"><strong>Motivo:</strong> ${a.motivo || 'Sem motivo registado.'}</div>
+                            <div class="alerta-estado-linha">
+                                <span>Atualizar estado:</span>
+                                <select onchange="atualizarAlerta(${a.id}, this.value)">
+                                    <option value="NOVO" ${a.estado==='NOVO'?'selected':''}>Novo</option>
+                                    <option value="VISTO" ${a.estado==='VISTO'?'selected':''}>Visto</option>
+                                    <option value="EM_SEGUIMENTO" ${a.estado==='EM_SEGUIMENTO'?'selected':''}>Em seguimento</option>
+                                    <option value="FECHADO" ${a.estado==='FECHADO'?'selected':''}>Fechado</option>
+                                </select>
+                            </div>
+                        </article>
+                    `).join('')}
+                </div>`;
         }
 
         async function atualizarAlerta(id, estado) {
@@ -487,7 +569,7 @@
             <tbody>
                 ${sintomas.map(s => `
                     <tr>
-                        <td style="font-weight:600">⚠️ ${s.descricao || 'Sintoma'}</td>
+                        <td style="font-weight:600">${s.descricao || 'Sintoma'}</td>
                         <td>${s.dataAparecimento ? new Date(s.dataAparecimento).toLocaleDateString('pt-PT') : '—'}</td>
                         <td><span class="badge badge-critica">Nível ${s.intensidade || '—'}/5</span></td>
                     </tr>
@@ -503,7 +585,7 @@
                 ${exames.map(e => `
                     <tr>
                         <td>${e.data ? new Date(e.data).toLocaleDateString('pt-PT') : '—'}</td>
-                        <td style="font-weight:600; color:#27a058;">🩺 ${e.tipo || 'Exame'}</td>
+                        <td style="font-weight:600; color:#27a058;">${e.tipo || 'Exame'}</td>
                         <td style="font-size:0.85rem; color:#555;">${e.resultado || '—'}</td>
                     </tr>
                 `).join('')}
@@ -516,9 +598,9 @@
         : alertas.map(a => `
             <div class="alerta-card ${a.prioridade}">
                 <div class="alerta-card-header">
-                    <span class="alerta-tipo">${a.tipo ? a.tipo.replace('_',' ').toUpperCase() : 'ALERTA'}</span>
+                    <span class="alerta-tipo">${a.tipo ? tipoVisivel(a.tipo) : 'Alerta'}</span>
                     <span class="alerta-data">${new Date(a.data || new Date()).toLocaleDateString('pt-PT')}</span>
-                    <span class="badge badge-${a.estado ? a.estado.toLowerCase().replace('_seguimento','seguimento') : 'novo'}">${a.estado}</span>
+                    <span class="badge badge-${a.estado ? a.estado.toLowerCase().replace('_seguimento','seguimento') : 'novo'}">${estadoVisivel(a.estado)}</span>
                 </div>
                 <p class="alerta-motivo">${a.motivo || '—'}</p>
             </div>`).join('');

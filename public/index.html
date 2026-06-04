@@ -8,37 +8,63 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Segoe UI', sans-serif;
-            background: #f5f4f2;
+            background:
+                radial-gradient(circle at top left, rgba(232, 74, 18, 0.14), transparent 34%),
+                linear-gradient(135deg, #fbfaf8 0%, #f1eee9 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 24px;
         }
         .piac-card {
-            background: #fff;
-            border-radius: 16px;
-            border: 0.5px solid #e0ddd8;
-            padding: 48px 44px 40px;
+            background: rgba(255,255,255,0.96);
+            border-radius: 22px;
+            border: 1px solid #ebe4dc;
+            box-shadow: 0 24px 70px rgba(55, 41, 31, 0.14);
+            overflow: hidden;
             width: 100%;
-            max-width: 420px;
+            max-width: 460px;
         }
+        .piac-hero {
+            min-height: 150px;
+            background: linear-gradient(90deg, rgba(232,74,18,.95), rgba(255,139,38,.92)), url('/assets/piac-icon.png') center 40% / cover no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 28px 24px;
+        }
+        .piac-content { padding: 34px 40px 36px; }
         .piac-logo {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 14px;
-            margin-bottom: 32px;
+            margin-bottom: 26px;
+            text-align: left;
         }
         .piac-logo-icon {
-            width: 48px;
-            height: 48px;
+            width: 58px;
+            height: 58px;
             background: #e84a12;
-            border-radius: 12px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            box-shadow: 0 12px 28px rgba(232,74,18,.28);
+            overflow: hidden;
         }
-        .piac-logo-icon svg { width: 28px; height: 28px; }
+
+        .brand-mark {
+            width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: inherit;
+            object-fit: cover;
+            object-position: center 42%;
+            filter: saturate(1.08) contrast(1.05);
+        }
         .piac-logo-text h1 {
             font-size: 1.5rem;
             font-weight: 700;
@@ -137,40 +163,52 @@
 </head>
 <body>
     <div class="piac-card">
-        <div class="piac-logo">
-            <div class="piac-logo-icon">
-                <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M14 4C9 4 6 8 6 12c0 5 4 9 8 11 4-2 8-6 8-11 0-4-3-8-8-8z" stroke="white" stroke-width="1.8" fill="none"/>
-                    <path d="M14 8v8M10 12h8" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
-                </svg>
+        <div class="piac-hero" aria-label="Imagem institucional PIAC"></div>
+        <div class="piac-content">
+            <div class="piac-logo">
+                <div class="piac-logo-icon">
+                    <img class="brand-mark" src="/assets/piac-icon.png" alt="PIAC">
+                </div>
+                <div class="piac-logo-text">
+                    <h1>PIAC</h1>
+                    <p>Plataforma Inteligente de<br>Acompanhamento Clínico</p>
+                </div>
             </div>
-            <div class="piac-logo-text">
-                <h1>PIAC</h1>
-                <p>Plataforma Inteligente de<br>Acompanhamento Clínico</p>
+
+            <div class="piac-divider"></div>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="exemplo@piac.pt">
+
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="••••••••">
+
+            <button onclick="fazerLogin()">Entrar na plataforma</button>
+
+            <div class="erro" id="msgErro"></div>
+
+            <div class="piac-info">
+                <div class="piac-info-title">Contas de demonstração (clique para preencher)</div>
+                <div style="cursor:pointer; margin-bottom:4px;" onclick="preencher('admin@piac.pt', 'admin123')">
+                    <span class="piac-dot"></span><strong>Administrador:</strong> admin@piac.pt / admin123
+                </div>
+                <div style="cursor:pointer; margin-bottom:4px;" onclick="preencher('ana.martins@piac.pt', 'medico123')">
+                    <span class="piac-dot"></span><strong>Médico:</strong> ana.martins@piac.pt / medico123
+                </div>
+                <div style="cursor:pointer;" onclick="preencher('joao.silva@email.pt', 'utente123')">
+                    <span class="piac-dot"></span><strong>Utente:</strong> joao.silva@email.pt / utente123
+                </div>
             </div>
-        </div>
-
-        <div class="piac-divider"></div>
-
-        <label for="email">Email</label>
-        <input type="email" id="email" placeholder="exemplo@piac.pt">
-
-        <label for="password">Password</label>
-        <input type="password" id="password" placeholder="••••••••">
-
-        <button onclick="fazerLogin()">Entrar na plataforma</button>
-
-        <div class="erro" id="msgErro"></div>
-
-        <div class="piac-info">
-            <div class="piac-info-title">Contas de demonstração</div>
-            <span class="piac-dot"></span><strong>Administrador:</strong> admin@piac.pt / admin123<br>
-            <span class="piac-dot"></span><strong>Médico:</strong> ana.martins@piac.pt / medico123<br>
-            <span class="piac-dot"></span><strong>Utente:</strong> joao.silva@email.pt / utente123
         </div>
     </div>
 
     <script>
+        function preencher(email, pass) {
+            document.getElementById('email').value = email;
+            document.getElementById('password').value = pass;
+            document.getElementById('msgErro').style.display = 'none';
+        }
+
         async function fazerLogin() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
