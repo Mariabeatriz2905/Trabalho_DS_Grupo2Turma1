@@ -63,15 +63,14 @@ npx ts-node src/app.ts
 O servidor fica disponível em **http://localhost:3000**
 
 ## Credenciais de Teste
-
-| Perfil | Email | Password |
-|--------|-------|----------|
-| Administrador | admin@piac.pt | admin123 |
-| Médico | ana.respiratoria@piac.pt | medico123 |
-| Médico | carlos.imuno@piac.pt | medico123 |
-| Utente | joao.silva@email.pt | utente123 |
-| Utente | maria.fernandes@email.pt | utente123 |
-| Utente | pedro.costa@email.pt | utente123 |
+Perfil	           Email	                        Password
+Administrador	   admin@piac.pt	                admin123
+Médico	           ana.martins@piac.pt	            medico123
+Médico	           carlos.costa@piac.pt	            medico123
+Utente	           joao.silva@email.pt	            utente123
+Utente	           maria.fernandes@email.pt         utente123
+Utente	           pedro.costa@email.pt	            utente123
+Utente             (Desativado)ana.sousa@email.pt	utente123
 
 ## Endpoints da API
 
@@ -99,30 +98,18 @@ O servidor fica disponível em **http://localhost:3000**
 | DELETE | `/medicos/:id` | Desativar médico | Admin        |
 
 ### CARAT
-| Método | URL | Descrição | Perfil |
-|--------|-----|-----------|--------|
-| POST | `/utentes/:id/carat` | Submeter questionário | Utente/Médico/Admin |
-| GET | `/utentes/:id/carat` | Histórico CARAT | Autenticado |
-| GET | `/carat/:evalId` | Ver avaliação por ID | Autenticado |
+| Método | URL                  | Descrição             | Perfil                            |
+|--------|----------------------|-----------------------|--------|
+| POST   | `/utentes/:id/carat` | Submeter questionário | Utente/Médico/Admin |
+| GET    | `/utentes/:id/carat` | Histórico CARAT       | Autenticado |
+| GET    | `/carat/:evalId`     | Ver avaliação por ID  | Autenticado |
 
 ### Alertas
-| Método | URL | Descrição | Perfil |
-|--------|-----|-----------|--------|
-| GET | `/medicos/:id/alertas` | Alertas do médico | Médico/Admin |
-| GET | `/utentes/:id/alertas` | Alertas do utente | Autenticado |
-| PATCH | `/alertas/:id` | Atualizar estado | Médico/Admin |
-
-### Notas Clínicas
-| Método | URL | Descrição | Perfil |
-|--------|-----|-----------|--------|
-| POST | `/utentes/:id/notas` | Criar nota clínica | Médico |
-| GET | `/utentes/:id/notas` | Ver notas do utente | Médico |
-
-### Limiares
-| Método | URL | Descrição | Perfil |
-|--------|-----|-----------|--------|
-| GET | `/limiares` | Ver limiares | Admin |
-| POST | `/limiares` | Configurar limiares | Admin |
+| Método | URL                    | Descrição         | Perfil |
+|--------|------------------------|-------------------|--------|
+| GET    | `/medicos/:id/alertas` | Alertas do médico | Médico/Admin |
+| GET    | `/utentes/:id/alertas` | Alertas do utente | Autenticado |
+| PATCH  | `/alertas/:id`         | Atualizar estado  | Médico/Admin |
 
 ### FHIR
 | Método | URL | Descrição |
@@ -130,19 +117,6 @@ O servidor fica disponível em **http://localhost:3000**
 | GET | `/fhir/observations` | Observações FHIR |
 | GET | `/fhir/patients/:id` | Paciente FHIR |
 
-## Motor CARAT
-
-O questionário CARAT tem 10 perguntas com respostas de 1 a 3:
-
-| Score | Nível de Controlo |
-|-------|------------------|
-| ≥ 24 v| Controlado |
-| 16–23 | Parcialmente Controlado |
-| < 16  |Não Controlado |
-
-### Alertas Automáticos
-- **Score baixo** — gerado quando score < 24
-- **Deterioração** — gerado quando score baixa ≥ 4 pontos em relação à avaliação anterior
 
 ## Dados Simulados
 
