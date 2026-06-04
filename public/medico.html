@@ -336,6 +336,25 @@
 
         let utenteAtualId = null;
         let medicoId = localStorage.getItem('perfilId');
+        //  ESPECIALIDADE
+        async function carregarPerfilMedico() {
+            if (!medicoId) return;
+            try {
+                const res = await fetch(`/medicos/${medicoId}`, { 
+                    headers: { 'Authorization': `Bearer ${token}` } 
+                });
+                if (res.ok) {
+                    const dadosMedico = await res.json();
+                    const especialidade = dadosMedico.especialidade || 'Clínica Geral';
+                    
+                    // Atualiza a barra de navegação com o nome e a especialidade
+                    document.getElementById('nomeMedico').innerHTML = 
+                        `<strong>Dr(a). ${utilizador.nome}</strong> <span style="margin-left: 6px; font-size: 0.75rem; color: #888; border-left: 1px solid #ccc; padding-left: 6px;">${especialidade}</span>`;
+                }
+            } catch (err) {
+                console.error("Erro ao carregar perfil do médico:", err);
+            }
+        }
 
         async function carregarAlertas() {
             if (!medicoId) { document.getElementById('alertasContainer').innerHTML = '<p class="empty-state">ID do médico não encontrado.</p>'; return; }
@@ -560,7 +579,7 @@
         }
 
         function sair() { localStorage.clear(); window.location.href = '/'; }
-
+        carregarPerfilMedico();
         carregarAlertas();
         carregarUtentes();
     </script>

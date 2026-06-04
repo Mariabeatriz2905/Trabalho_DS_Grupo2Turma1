@@ -34,8 +34,8 @@ async function seed() {
 
  // MÉDICOS
     const utilizadorMedico1 = AppDataSource.getRepository(Utilizador).create({
-        nome: "Dra. Ana Respiratória",
-        email: "ana.respiratoria@piac.pt",
+        nome: "Dra. Ana Margarida Martins",
+        email: "ana.martins@piac.pt",
         password: "medico123",
         perfil: "medico",
         estado: true
@@ -51,8 +51,8 @@ async function seed() {
     await AppDataSource.getRepository(Medico).save(medico1);
 
     const utilizadorMedico2 = AppDataSource.getRepository(Utilizador).create({
-        nome: "Dr. Carlos Imunoalergologia",
-        email: "carlos.imuno@piac.pt",
+        nome: "Dr. Carlos Miguel Costa",
+        email: "carlos.costa@piac.pt",
         password: "medico123",
         perfil: "medico",
         estado: true
@@ -69,7 +69,7 @@ async function seed() {
 
 // UTENTES
     const utilizadorUtente1 = AppDataSource.getRepository(Utilizador).create({
-        nome: "João Silva",
+        nome: "João Miguel Tavares Silva",
         email: "joao.silva@email.pt",
         password: "utente123",
         perfil: "utente",
@@ -88,7 +88,7 @@ async function seed() {
     await AppDataSource.getRepository(Utente).save(utente1);
 
     const utilizadorUtente2 = AppDataSource.getRepository(Utilizador).create({
-        nome: "Maria Fernandes",
+        nome: "Maria Leonor Ribeiro Fernandes",
         email: "maria.fernandes@email.pt",
         password: "utente123",
         perfil: "utente",
@@ -107,7 +107,7 @@ async function seed() {
     await AppDataSource.getRepository(Utente).save(utente2);
 
     const utilizadorUtente3 = AppDataSource.getRepository(Utilizador).create({
-        nome: "Pedro Costa",
+        nome: "Pedro Nuno Martins Costa",
         email: "pedro.costa@email.pt",
         password: "utente123",
         perfil: "utente",
@@ -126,7 +126,7 @@ async function seed() {
     await AppDataSource.getRepository(Utente).save(utente3);
 
     const utilizadorUtente4 = AppDataSource.getRepository(Utilizador).create({
-    nome: "Ana Sousa",
+    nome: "Ana Filipa de Sousa",
     email: "ana.sousa@email.pt",
     password: "utente123",
     perfil: "utente",
