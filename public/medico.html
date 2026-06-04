@@ -332,7 +332,7 @@
         const token = localStorage.getItem('token');
         const utilizador = JSON.parse(localStorage.getItem('utilizador') || '{}');
         if (!token || utilizador.perfil !== 'medico') window.location.href = '/';
-        document.getElementById('nomeMedico').textContent = `Dr(a). ${utilizador.nome}`;
+        document.getElementById('nomeMedico').textContent = utilizador.nome;
 
         let utenteAtualId = null;
         let medicoId = localStorage.getItem('perfilId');
@@ -349,7 +349,7 @@
                     
                     // Atualiza a barra de navegação com o nome e a especialidade
                     document.getElementById('nomeMedico').innerHTML = 
-                        `<strong>Dr(a). ${utilizador.nome}</strong> <span style="margin-left: 6px; font-size: 0.75rem; color: #888; border-left: 1px solid #ccc; padding-left: 6px;">${especialidade}</span>`;
+                        `<strong>${utilizador.nome}</strong> <span style="margin-left: 6px; font-size: 0.75rem; color: #888; border-left: 1px solid #ccc; padding-left: 6px;">${especialidade}</span>`;
                 }
             } catch (err) {
                 console.error("Erro ao carregar perfil do médico:", err);
