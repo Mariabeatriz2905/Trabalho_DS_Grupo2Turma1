@@ -51,7 +51,7 @@ export class CaratService {
         await this.gerarAlertasAutomaticos(utente, avaliacaoGuardada, scoreTotal);
         return avaliacaoGuardada;
     }
-
+    // Lógica de cálculo e geração de alertas baseada em limiares clínicos
     private async gerarAlertasAutomaticos(
         utente: Utente,
         avaliacao: AvaliacaoCarat,
@@ -59,6 +59,7 @@ export class CaratService {
     ): Promise<void> {
         const medico = utente.medico ?? null;
 
+        // Alerta por Score Baixo (Doença Não Controlada)
         if (scoreAtual < LIMIAR_NAO_CONTROLADO) {
             await this.alertaRepository.save(this.alertaRepository.create({
                 utente, medico, avaliacao,
@@ -72,7 +73,7 @@ export class CaratService {
                 motivo: `Score CARAT de ${scoreAtual} indica doença PARCIALMENTE CONTROLADA. Recomenda-se revisão terapêutica.`
             }));
         }
-
+        // Alerta por Deterioração (Queda significativa face à avaliação anterior)
         const todasAvaliacoes = await this.caratRepository.find({
             where: { utente: { id: utente.id } },
             order: { data: "DESC" },

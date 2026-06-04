@@ -1,5 +1,5 @@
 import { ObservationDto } from "../dtos/fhir/observation.dto";
-
+// Conversão de um recurso FHIR Observation para um DTO simplificado
 export function mapObservation(resource: any): ObservationDto {
     return {
         id: resource.id,

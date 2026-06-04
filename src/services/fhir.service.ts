@@ -3,6 +3,7 @@ import { mapObservation } from "../mappers/fhir-observation.mapper";
 
 const FHIR_BASE_URL = "https://fhir.hl7.pt/r5/fhir";
 
+// Consumo de recursos Observation de um servidor FHIR externo
 export async function getObservationsFromFhir(
     code: string = "8310-5",
     patient?: string
