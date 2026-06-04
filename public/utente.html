@@ -330,24 +330,24 @@
         const container = document.getElementById('perguntasContainer');
         
        
-        perguntas.forEach((p, i) => {
+       perguntas.forEach((p, i) => {
             let htmlOpcoes = '';
 
             if (i < 9) {
-                // Perguntas 1 a 9
+                // Perguntas 1 a 9 (Escala Oficial CARAT: 0 a 3 pontos)
                 htmlOpcoes = `
-                    <label><input type="radio" name="q${i}" value="4"><span style="display:block;padding:6px 0">Nunca</span></label>
-                    <label><input type="radio" name="q${i}" value="3"><span style="display:block;padding:6px 0">Até 1 ou 2 dias</span></label>
-                    <label><input type="radio" name="q${i}" value="2"><span style="display:block;padding:6px 0">Mais de 2 dias/semana</span></label>
-                    <label><input type="radio" name="q${i}" value="1"><span style="display:block;padding:6px 0">Quase todos os dias</span></label>
+                    <label><input type="radio" name="q${i}" value="3"><span style="display:block;padding:6px 0">Nunca</span></label>
+                    <label><input type="radio" name="q${i}" value="2"><span style="display:block;padding:6px 0">Até 1 ou 2 dias</span></label>
+                    <label><input type="radio" name="q${i}" value="1"><span style="display:block;padding:6px 0">Mais de 2 dias/semana</span></label>
+                    <label><input type="radio" name="q${i}" value="0"><span style="display:block;padding:6px 0">Quase todos os dias</span></label>
                 `;
             } else {
-                // Pergunta 10 (Caso especial com textos diferentes)
+                // Pergunta 10 (Caso especial da medicação: 0 a 3 pontos)
                 htmlOpcoes = `
-                    <label><input type="radio" name="q${i}" value="4"><span style="display:block;padding:6px 0">Não estou a tomar med.</span></label>
-                    <label><input type="radio" name="q${i}" value="4"><span style="display:block;padding:6px 0">Nunca</span></label>
-                    <label><input type="radio" name="q${i}" value="3"><span style="display:block;padding:6px 0">Menos de 7 dias</span></label>
-                    <label><input type="radio" name="q${i}" value="1"><span style="display:block;padding:6px 0">7 ou mais dias</span></label>
+                    <label><input type="radio" name="q${i}" value="3"><span style="display:block;padding:6px 0">Não estou a tomar med.</span></label>
+                    <label><input type="radio" name="q${i}" value="3"><span style="display:block;padding:6px 0">Nunca</span></label>
+                    <label><input type="radio" name="q${i}" value="1"><span style="display:block;padding:6px 0">Menos de 7 dias</span></label>
+                    <label><input type="radio" name="q${i}" value="0"><span style="display:block;padding:6px 0">7 ou mais dias</span></label>
                 `;
             }
 
@@ -416,7 +416,7 @@
                             a.interpretacao === 'Parcialmente Controlado' ? 'parcial' : 'nao-controlado';
                 return `<tr>
                     <td>${new Date(a.data).toLocaleDateString('pt-PT')}</td>
-                    <td><strong>${a.scoreTotal}</strong> / 40</td>
+                    <td><strong>${a.scoreTotal}</strong> / 30</td>
                     <td><span class="badge badge-${cls}">${a.interpretacao}</span></td>
                     <td style="font-size:0.82rem;color:#666">${a.textoRecomendacao || '—'}</td>
                 </tr>`;
@@ -471,7 +471,7 @@
                 const cls = dados.scoreTotal >= 24 ? 'controlado' : dados.scoreTotal >= 16 ? 'parcial' : 'nao-controlado';
                 resultDiv.className = `resultado ${cls}`;
                 resultDiv.innerHTML = `
-                    <strong>Score Total: ${dados.scoreTotal} / 40</strong><br>
+                    <strong>Score Total: ${dados.scoreTotal} / 30</strong><br>
                     <strong>Interpretação: ${dados.interpretacao}</strong><br><br>
                     ${dados.textoRecomendacao}`;
                 await carregarHistorico();

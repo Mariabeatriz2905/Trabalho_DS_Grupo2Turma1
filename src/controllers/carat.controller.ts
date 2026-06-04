@@ -17,11 +17,11 @@ export class CaratController {
                 res.status(400).json({ erro: "O questionário CARAT requer exatamente 10 respostas." });
                 return;
             }
-            const invalidas = respostas.some((r: any) => typeof r !== "number" || r < 1 || r > 3);
+            const invalidas = respostas.some((r: any) => typeof r !== "number" || r < 0 || r > 3);
             if (invalidas) {
-                res.status(400).json({ erro: "Cada resposta deve ser um número entre 1 e 3." });
-                return;
-            }
+                    res.status(400).json({ erro: "Cada resposta deve ser um número entre 0 e 3." });
+                    return;
+}
 
             const avaliacao = await this.service.calcularEGuardar(utenteId, respostas);
             res.status(201).json(avaliacao);
