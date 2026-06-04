@@ -1,0 +1,1326 @@
+{
+  "info": {
+    "_postman_id": "26820642-a80a-4281-b8d0-d9c99c6e2025",
+    "name": "Testes PIAC",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "42973687"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve devolver status 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"A resposta deve ser JSON\", function () {\r",
+                  "    pm.response.to.be.json;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"A resposta deve conter o token e o perfil administrador\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData).to.have.property(\"token\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"utilizador\");\r",
+                  "    pm.expect(jsonData.utilizador).to.have.property(\"perfil\");\r",
+                  "    pm.expect(jsonData.utilizador.perfil).to.eql(\"administrador\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"admin@piac.pt\",\r\n    \"password\": \"admin123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Médico",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve devolver status 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"A resposta deve ser JSON\", function () {\r",
+                  "    pm.response.to.be.json;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"A resposta deve conter o token e validar o perfil medico\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData).to.have.property(\"token\");\r",
+                  "    pm.expect(jsonData.utilizador.perfil).to.eql(\"medico\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"ana.martins@piac.pt\",\r\n  \"password\": \"medico123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login Utente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve devolver status 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"A resposta deve ser JSON\", function () {\r",
+                  "    pm.response.to.be.json;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"A resposta deve conter o token e validar o perfil utente\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData).to.have.property(\"token\");\r",
+                  "    pm.expect(jsonData.utilizador.perfil).to.eql(\"utente\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"joao.silva@email.pt\",\r\n    \"password\": \"utente123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Utente",
+      "item": [
+        {
+          "name": "Listar Utentes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve devolver status 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"A resposta deve ser um array\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData).to.be.an(\"array\");\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Cada utente deve ter as propriedades mapeadas no banco de dados\", function () {\r",
+                  "    const utentes = pm.response.json();\r",
+                  "    utentes.forEach(function (utente) {\r",
+                  "        pm.expect(utente).to.have.property(\"nif\");\r",
+                  "        pm.expect(utente).to.have.property(\"contacto\");\r",
+                  "        pm.expect(utente).to.have.property(\"dataNascimento\");\r",
+                  "    });\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBwaWFjLnB0IiwicGVyZmlsIjoiYWRtaW5pc3RyYWRvciIsImlhdCI6MTc4MDU5MzM0NiwiZXhwIjoxNzgwNjIyMTQ2fQ.Y-JZ4ePvkvoWz3Fn2OrYtXMw8UcCG8Buv2yw1mh7JP4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/utentes",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "utentes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Criar Utente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const statusCode = pm.response.code;\r",
+                  "\r",
+                  "if (statusCode === 201) {\r",
+                  "    pm.test(\"Status deve ser 201 (Criado com sucesso)\", function () {\r",
+                  "        pm.response.to.have.status(201);\r",
+                  "    });\r",
+                  "\r",
+                  "    pm.test(\"A resposta deve conter o objeto utente\", function () {\r",
+                  "        const jsonData = pm.response.json();\r",
+                  "        pm.expect(jsonData).to.have.property(\"utente\");\r",
+                  "        pm.expect(jsonData.utente).to.have.property(\"nif\");\r",
+                  "    });\r",
+                  "} else if (statusCode === 400) {\r",
+                  "    pm.test(\"Status deve ser 400 (E-mail duplicado bloqueado)\", function () {\r",
+                  "        pm.response.to.have.status(400);\r",
+                  "    });\r",
+                  "\r",
+                  "    pm.test(\"A resposta deve conter a mensagem de erro correta\", function () {\r",
+                  "        const jsonData = pm.response.json();\r",
+                  "        pm.expect(jsonData).to.have.property(\"erro\");\r",
+                  "        pm.expect(jsonData.erro).to.include(\"Email já registado.\");\r",
+                  "    });\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBwaWFjLnB0IiwicGVyZmlsIjoiYWRtaW5pc3RyYWRvciIsImlhdCI6MTc4MDU5MzM0NiwiZXhwIjoxNzgwNjIyMTQ2fQ.Y-JZ4ePvkvoWz3Fn2OrYtXMw8UcCG8Buv2yw1mh7JP4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"nome\": \"Mariana Costa Sousa\",\r\n  \"email\": \"mariana.sousa@email.pt\",\r\n  \"password\": \"utente123\",\r\n  \"nif\": \"555555555\",\r\n  \"dataNascimento\": \"1995-08-12\",\r\n  \"contacto\": \"912000005\",\r\n  \"id_medico\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/utentes",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "utentes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Utente por ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve devolver status 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"A resposta deve ser JSON\", function () {\r",
+                  "    pm.response.to.be.json;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Deve conter os dados corretos do utente e o utilizador associado\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    \r",
+                  "\r",
+                  "    pm.expect(jsonData).to.have.property(\"nif\");\r",
+                  "    pm.expect(jsonData).to.have.property(\"contacto\");\r",
+                  "    \r",
+                  "    pm.expect(jsonData).to.have.property(\"utilizador\");\r",
+                  "    pm.expect(jsonData.utilizador.estado).to.be.true;\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhbmEubWFydGluc0BwaWFjLnB0IiwicGVyZmlsIjoibWVkaWNvIiwiaWF0IjoxNzgwNTkzMzY1LCJleHAiOjE3ODA2MjIxNjV9.JlPVACbmLVTlMhnFiaEtpkxc3kS9ffxMpRsDfBE0Vrw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/utentes/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "utentes",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Desativar Utente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve devolver status 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"A resposta deve ser JSON\", function () {\r",
+                  "    pm.response.to.be.json;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Deve confirmar a desativação do utente\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    \r",
+                  "    // Se a API devolver uma mensagem de texto\r",
+                  "    if (jsonData.mensagem) {\r",
+                  "        pm.expect(jsonData.mensagem.toLowerCase()).to.include(\"desativado\");\r",
+                  "    } \r",
+                  "    else if (jsonData.estado !== undefined) {\r",
+                  "        pm.expect(jsonData.estado).to.be.false;\r",
+                  "    } \r",
+                  "    else if (jsonData.utilizador) {\r",
+                  "        pm.expect(jsonData.utilizador.estado).to.be.false;\r",
+                  "    }\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBwaWFjLnB0IiwicGVyZmlsIjoiYWRtaW5pc3RyYWRvciIsImlhdCI6MTc4MDU5MzM0NiwiZXhwIjoxNzgwNjIyMTQ2fQ.Y-JZ4ePvkvoWz3Fn2OrYtXMw8UcCG8Buv2yw1mh7JP4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/utentes/4",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "utentes",
+                "4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar Utente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve devolver status 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"O contacto deve ser atualizado com sucesso\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    const utente = jsonData.utente || jsonData;\r",
+                  "    \r",
+                  "    pm.expect(utente).to.have.property(\"contacto\");\r",
+                  "    pm.expect(utente.contacto).to.eql(\"912999999\"); \r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBwaWFjLnB0IiwicGVyZmlsIjoiYWRtaW5pc3RyYWRvciIsImlhdCI6MTc4MDU5MzM0NiwiZXhwIjoxNzgwNjIyMTQ2fQ.Y-JZ4ePvkvoWz3Fn2OrYtXMw8UcCG8Buv2yw1mh7JP4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contacto\": \"912999999\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/utentes/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "utentes",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Médico",
+      "item": [
+        {
+          "name": "Listar Médicos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve devolver status 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Os médicos devem conter especialidade e contacto\", function () {\r",
+                  "    const medicos = pm.response.json();\r",
+                  "    pm.expect(medicos).to.be.an(\"array\");\r",
+                  "    if(medicos.length > 0) {\r",
+                  "        pm.expect(medicos[0]).to.have.property(\"especialidade\");\r",
+                  "        pm.expect(medicos[0]).to.have.property(\"contacto\");\r",
+                  "    }\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBwaWFjLnB0IiwicGVyZmlsIjoiYWRtaW5pc3RyYWRvciIsImlhdCI6MTc4MDU5MzM0NiwiZXhwIjoxNzgwNjIyMTQ2fQ.Y-JZ4ePvkvoWz3Fn2OrYtXMw8UcCG8Buv2yw1mh7JP4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/medicos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "medicos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Criar Médico",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const statusCode = pm.response.code;\r",
+                  "\r",
+                  "if (statusCode === 201) {\r",
+                  "    pm.test(\"Status deve ser 201 (Médico criado com sucesso)\", function () {\r",
+                  "        pm.response.to.have.status(201);\r",
+                  "    });\r",
+                  "\r",
+                  "    pm.test(\"O médico criado deve conter os dados enviados\", function () {\r",
+                  "        const medico = pm.response.json();\r",
+                  "        pm.expect(medico).to.have.property(\"especialidade\");\r",
+                  "        pm.expect(medico.especialidade).to.eql(\"Pneumologia\");\r",
+                  "    });\r",
+                  "} else if (statusCode === 400) {\r",
+                  "    pm.test(\"Status deve ser 400 (E-mail duplicado bloqueado)\", function () {\r",
+                  "        pm.response.to.have.status(400);\r",
+                  "    });\r",
+                  "\r",
+                  "    pm.test(\"A resposta deve conter a mensagem de erro correta\", function () {\r",
+                  "        const jsonData = pm.response.json();\r",
+                  "        pm.expect(jsonData).to.have.property(\"erro\");\r",
+                  "        pm.expect(jsonData.erro).to.include(\"já registado\");\r",
+                  "    });\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBwaWFjLnB0IiwicGVyZmlsIjoiYWRtaW5pc3RyYWRvciIsImlhdCI6MTc4MDU5MzM0NiwiZXhwIjoxNzgwNjIyMTQ2fQ.Y-JZ4ePvkvoWz3Fn2OrYtXMw8UcCG8Buv2yw1mh7JP4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"nome\": \"Dr. Rui Oliveira\",\r\n    \"email\": \"rui.oliveira@piac.pt\",\r\n    \"password\": \"medico123\",\r\n    \"especialidade\": \"Pneumologia\",\r\n    \"contacto\": \"961000004\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/medicos",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "medicos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Médicos por ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve devolver status 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBwaWFjLnB0IiwicGVyZmlsIjoiYWRtaW5pc3RyYWRvciIsImlhdCI6MTc4MDU5MzM0NiwiZXhwIjoxNzgwNjIyMTQ2fQ.Y-JZ4ePvkvoWz3Fn2OrYtXMw8UcCG8Buv2yw1mh7JP4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/medicos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "medicos",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar Médicos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve devolver status 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"O contacto do médico deve ser modificado\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    const medico = jsonData.medico || jsonData;\r",
+                  "    \r",
+                  "    pm.expect(medico).to.have.property(\"contacto\");\r",
+                  "    pm.expect(medico.contacto).to.eql(\"961999999\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBwaWFjLnB0IiwicGVyZmlsIjoiYWRtaW5pc3RyYWRvciIsImlhdCI6MTc4MDQ4MDE5MCwiZXhwIjoxNzgwNTA4OTkwfQ.fYL3cc0oCX58-TwcP5NW9iwgo56KFWyZJPcPUuirImc",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"especialidade\": \"Imunoalergologia\",\r\n    \"contacto\": \"961999999\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/medicos/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "medicos",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Desativar Médico",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve devolver status 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBwaWFjLnB0IiwicGVyZmlsIjoiYWRtaW5pc3RyYWRvciIsImlhdCI6MTc4MDU5MzM0NiwiZXhwIjoxNzgwNjIyMTQ2fQ.Y-JZ4ePvkvoWz3Fn2OrYtXMw8UcCG8Buv2yw1mh7JP4",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/medicos/3",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "medicos",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "CARAT",
+      "item": [
+        {
+          "name": "Submeter CARAT",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve devolver status 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"O motor CARAT deve calcular e interpretar corretamente\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    const avaliacao = jsonData.avaliacao || jsonData;\r",
+                  "    \r",
+                  "    pm.expect(avaliacao).to.have.property(\"scoreTotal\");\r",
+                  "    pm.expect(avaliacao).to.have.property(\"interpretacao\");\r",
+                  "    pm.expect(avaliacao).to.have.property(\"textoRecomendacao\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJqb2FvLnNpbHZhQGVtYWlsLnB0IiwicGVyZmlsIjoidXRlbnRlIiwiaWF0IjoxNzgwNTkzMzc5LCJleHAiOjE3ODA2MjIxNzl9.6iQH7yogux6iX_dy_vhrXD3s06dYDQ0QoKwmconUsqY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"respostas\": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/utentes/2/carat",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "utentes",
+                "2",
+                "carat"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Histórico CARAT",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve devolver status 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Deve retornar uma lista de avaliações\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    pm.expect(jsonData).to.be.an(\"array\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhbmEubWFydGluc0BwaWFjLnB0IiwicGVyZmlsIjoibWVkaWNvIiwiaWF0IjoxNzgwNTkzMzY1LCJleHAiOjE3ODA2MjIxNjV9.JlPVACbmLVTlMhnFiaEtpkxc3kS9ffxMpRsDfBE0Vrw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/utentes/2/carat",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "utentes",
+                "2",
+                "carat"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CARAT por ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve devolver status 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhbmEubWFydGluc0BwaWFjLnB0IiwicGVyZmlsIjoibWVkaWNvIiwiaWF0IjoxNzgwNTkzMzY1LCJleHAiOjE3ODA2MjIxNjV9.JlPVACbmLVTlMhnFiaEtpkxc3kS9ffxMpRsDfBE0Vrw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/carat/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "carat",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Alertas",
+      "item": [
+        {
+          "name": "Alertas do Médico",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve devolver status 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Os alertas do médico devem conter tipo, prioridade e motivo\", function () {\r",
+                  "    const alertas = pm.response.json();\r",
+                  "    pm.expect(alertas).to.be.an(\"array\");\r",
+                  "    if (alertas.length > 0) {\r",
+                  "        pm.expect(alertas[0]).to.have.property(\"tipo\");\r",
+                  "        pm.expect(alertas[0]).to.have.property(\"prioridade\");\r",
+                  "        pm.expect(alertas[0]).to.have.property(\"motivo\");\r",
+                  "    }\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhbmEubWFydGluc0BwaWFjLnB0IiwicGVyZmlsIjoibWVkaWNvIiwiaWF0IjoxNzgwNTkzMzY1LCJleHAiOjE3ODA2MjIxNjV9.JlPVACbmLVTlMhnFiaEtpkxc3kS9ffxMpRsDfBE0Vrw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/medicos/1/alertas",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "medicos",
+                "1",
+                "alertas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Alertas do Utente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve devolver status 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJqb2FvLnNpbHZhQGVtYWlsLnB0IiwicGVyZmlsIjoidXRlbnRlIiwiaWF0IjoxNzgwNTkzMzc5LCJleHAiOjE3ODA2MjIxNzl9.6iQH7yogux6iX_dy_vhrXD3s06dYDQ0QoKwmconUsqY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/utentes/2/alertas",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "utentes",
+                "2",
+                "alertas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar Alerta",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve devolver status 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"O estado do alerta deve mudar para VISTO\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    const alerta = jsonData.alerta || jsonData;\r",
+                  "    \r",
+                  "    pm.expect(alerta).to.have.property(\"estado\");\r",
+                  "    pm.expect(alerta.estado).to.eql(\"VISTO\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhbmEubWFydGluc0BwaWFjLnB0IiwicGVyZmlsIjoibWVkaWNvIiwiaWF0IjoxNzgwNTkzMzY1LCJleHAiOjE3ODA2MjIxNjV9.JlPVACbmLVTlMhnFiaEtpkxc3kS9ffxMpRsDfBE0Vrw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"estado\": \"VISTO\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/alertas/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "alertas",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "FHIR",
+      "item": [
+        {
+          "name": "FHIR Observations",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Deve devolver status 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"A resposta deve ser JSON\", function () {\r",
+                  "    pm.response.to.be.json;\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"A estrutura deve cumprir os requisitos de interoperabilidade\", function () {\r",
+                  "    const jsonData = pm.response.json();\r",
+                  "    const dados = Array.isArray(jsonData) ? jsonData[0] : jsonData;\r",
+                  "    if (dados && dados.resourceType) {\r",
+                  "        pm.expect(dados.resourceType).to.be.oneOf([\"Bundle\", \"Observation\"]);\r",
+                  "    } else {\r",
+                  "        pm.expect(dados).to.be.an(\"object\");\r",
+                  "    }\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhbmEubWFydGluc0BwaWFjLnB0IiwicGVyZmlsIjoibWVkaWNvIiwiaWF0IjoxNzgwNTkzMzY1LCJleHAiOjE3ODA2MjIxNjV9.JlPVACbmLVTlMhnFiaEtpkxc3kS9ffxMpRsDfBE0Vrw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/fhir/observations",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "fhir",
+                "observations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "FHIR Patient",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const statusCode = pm.response.code;\r",
+                  "\r",
+                  "if (statusCode === 200) {\r",
+                  "    pm.test(\"Deve devolver status 200 (Paciente FHIR encontrado)\", function () {\r",
+                  "        pm.response.to.have.status(200);\r",
+                  "    });\r",
+                  "\r",
+                  "    pm.test(\"A estrutura deve cumprir o recurso Patient do FHIR\", function () {\r",
+                  "        const jsonData = pm.response.json();\r",
+                  "        pm.expect(jsonData.resourceType).to.eql(\"Patient\");\r",
+                  "        pm.expect(jsonData).to.have.property(\"identifier\");\r",
+                  "    });\r",
+                  "} else if (statusCode === 404) {\r",
+                  "    pm.test(\"Deve devolver status 404 (Paciente não encontrado)\", function () {\r",
+                  "        pm.response.to.have.status(404);\r",
+                  "    });\r",
+                  "    pm.test(\"A resposta deve conter a mensagem de erro estruturada\", function () {\r",
+                  "        const jsonData = pm.response.json();\r",
+                  "        pm.expect(jsonData).to.have.property(\"erro\");\r",
+                  "        pm.expect(jsonData.erro).to.include(\"não encontrado\");\r",
+                  "    });\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJhbmEubWFydGluc0BwaWFjLnB0IiwicGVyZmlsIjoibWVkaWNvIiwiaWF0IjoxNzgwNTkzMzY1LCJleHAiOjE3ODA2MjIxNjV9.JlPVACbmLVTlMhnFiaEtpkxc3kS9ffxMpRsDfBE0Vrw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/fhir/patients/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "fhir",
+                "patients",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZW1haWwiOiJqb2FvLnNpbHZhQGVtYWlsLnB0IiwicGVyZmlsIjoidXRlbnRlIiwiaWF0IjoxNzc5OTIzNzE2LCJleHAiOjE3Nzk5NTI1MTZ9.1XEwESD5vlky-e46xGERE9Gqy1xQezJmw40ezgrNHWg",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ]
+}
