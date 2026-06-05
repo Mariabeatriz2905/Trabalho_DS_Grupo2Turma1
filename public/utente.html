@@ -297,10 +297,10 @@
             </div>
             <table>
                 <thead>
-                    <tr><th>Data</th><th>Score Total</th><th>Interpretação</th><th>Recomendação</th></tr>
+                    <tr><th>Data</th><th>Score Total</th><th>Rinite (Q1–4)</th><th>Asma (Q5–10)</th><th>Interpretação</th><th>Recomendação</th></tr>
                 </thead>
                 <tbody id="historicoTabela">
-                    <tr><td colspan="4" class="empty-state">A carregar histórico...</td></tr>
+                    <tr><td colspan="6" class="empty-state">A carregar histórico...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -346,7 +346,7 @@
                 htmlOpcoes = `
                     <label><input type="radio" name="q${i}" value="3"><span style="display:block;padding:6px 0">Não estou a tomar med.</span></label>
                     <label><input type="radio" name="q${i}" value="3"><span style="display:block;padding:6px 0">Nunca</span></label>
-                    <label><input type="radio" name="q${i}" value="1"><span style="display:block;padding:6px 0">Menos de 7 dias</span></label>
+                    <label><input type="radio" name="q${i}" value="2"><span style="display:block;padding:6px 0">Menos de 7 dias</span></label>
                     <label><input type="radio" name="q${i}" value="0"><span style="display:block;padding:6px 0">7 ou mais dias</span></label>
                 `;
             }
@@ -408,7 +408,7 @@
 
             const tbody = document.getElementById('historicoTabela');
             if (avaliacoes.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Sem avaliações ainda.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Sem avaliações ainda.</td></tr>';
                 return;
             }
             tbody.innerHTML = avaliacoes.map(a => {
@@ -417,6 +417,8 @@
                 return `<tr>
                     <td>${new Date(a.data).toLocaleDateString('pt-PT')}</td>
                     <td><strong>${a.scoreTotal}</strong> / 30</td>
+                    <td style="text-align:center">${a.scoreRinite ?? '—'}/12</td>
+                    <td style="text-align:center">${a.scoreAsma ?? '—'}/18</td>
                     <td><span class="badge badge-${cls}">${a.interpretacao}</span></td>
                     <td style="font-size:0.82rem;color:#666">${a.textoRecomendacao || '—'}</td>
                 </tr>`;
@@ -472,6 +474,7 @@
                 resultDiv.className = `resultado ${cls}`;
                 resultDiv.innerHTML = `
                     <strong>Score Total: ${dados.scoreTotal} / 30</strong><br>
+                    <span style="font-size:0.85rem">Rinite (Q1–Q4): <strong>${dados.scoreRinite}/12</strong> &nbsp;|&nbsp; Asma (Q5–Q10): <strong>${dados.scoreAsma}/18</strong></span><br><br>
                     <strong>Interpretação: ${dados.interpretacao}</strong><br><br>
                     ${dados.textoRecomendacao}`;
                 await carregarHistorico();
