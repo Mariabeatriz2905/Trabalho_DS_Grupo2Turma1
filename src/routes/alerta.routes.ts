@@ -14,4 +14,8 @@ routes.get("/utentes/:id/alertas", autenticar,
 routes.patch("/alertas/:id", autenticar, autorizar("medico", "administrador"),
     (req: Request, res: Response) => controller.atualizarEstado(req, res));
 
-export default routes;
+routes.post("/alertas", autenticar, autorizar("medico", "administrador"),
+    (req: Request, res: Response) => controller.criar(req, res));
+
+
+    export default routes;

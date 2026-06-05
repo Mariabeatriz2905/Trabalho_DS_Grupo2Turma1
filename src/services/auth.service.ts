@@ -4,7 +4,7 @@ import { Utente } from "../models/utente.entity";
 import { Medico } from "../models/medico.entity";
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = "piac_secret_2026";
+import { JWT_SECRET } from "../middleware/auth.middleware";
 
 export class AuthService {
     private utilizadorRepo = AppDataSource.getRepository(Utilizador);

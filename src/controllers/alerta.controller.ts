@@ -39,4 +39,12 @@ export class AlertaController {
             res.status(400).json({ erro: err.message });
         }
     }
+    async criar(req: Request, res: Response): Promise<void> {
+        try {
+            const alerta = await service.criarAlerta(req.body);
+            res.status(201).json(alerta);
+        } catch (err: any) {
+            res.status(400).json({ erro: err.message });
+        }
+    }
 }

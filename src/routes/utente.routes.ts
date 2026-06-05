@@ -24,4 +24,7 @@ routes.patch("/:id", autenticar, (req: Request, res: Response) =>
 routes.delete("/:id", autenticar, autorizar("administrador"), (req: Request, res: Response) =>
     controller.desativar(req, res));
 
+routes.get("/:id/fhir", autenticar, autorizar("medico", "administrador"), (req: Request, res: Response) =>
+    controller.obterFHIR(req, res));
+
 export default routes;
